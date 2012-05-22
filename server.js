@@ -73,6 +73,21 @@ function initLibraries(app) {
             res.json('delete tags');
         }
     );
+
+    crud(app, prefix + '/:id/watchers',
+        function(req, res) {
+            res.json('create watchers');
+        },
+        function(req, res) {
+            res.json('get watchers');
+        },
+        function(req, res) {
+            res.json('update watchers');
+        },
+        function(req, res) {
+            res.json('delete watchers');
+        }
+    );
 }
 
 function initTags(app) {
