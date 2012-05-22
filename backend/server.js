@@ -28,129 +28,50 @@ function main() {
 }
 
 function initREST(app) {
-    initLibraries(app);
-    initTags(app);
-    initLicenses(app);
+    var apis = {
+        'libraries': models.Library,
+        'tags': models.Tag,
+        'licenses': models.License
+    };
+
+    for(var k in apis) initCrud(app, '/apiv1/' + k, apis[k]);
 }
 
-function initLibraries(app) {
-    var prefix = '/apiv1/libraries';
+function initCrud(app, prefix, model) {
+    function ret(res) {
+        return function(d) {res.json(d);};
+    }
 
     crud(app, prefix,
         function(req, res) {
             // TODO: auth
-            models.create(models.Library, req.body,
-                function(d) {res.json(d);},
-                function(d) {res.json(d);}
-            );
+            models.create(model, req.body, ret(res), ret(res));
         },
         function(req, res) {
-            models.getAll(models.Library,
-                function(d) {res.json(d);},
-                function(d) {res.json(d);}
-            );
+            models.getAll(model, ret(res), ret(res));
         }
     );
 
     crud(app, prefix + '/:id',
         undefined,
         function(req, res) {
-            models.get(models.Library, req.params.id,
-                function(d) {res.json(d);},
+            models.get(model, req.params.id, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
         },
         function(req, res) {
-            models.update(models.Library, req.params.id, req.body,
-                function(d) {res.json(d);},
-                function(d) {error(res, MSGS.notFound, 404);}
-            );
-        },
-        function(req, res) {
-            // TODO: auth, error(res, MSGS.del, 400)
-            models.del(models.Library, req.params.id,
-                function(d) {res.json(d);},
-                function(d) {error(res, MSGS.notFound, 404);}
-            );
-        }
-    );
-}
-
-function initTags(app) {
-    var prefix = '/apiv1/tags';
-
-    crud(app, prefix,
-        function(req, res) {
-            // TODO: auth
-            models.create(models.Tag, req.body,
-                function(d) {res.json(d);},
-                function(d) {res.json(d);}
-            );
-        },
-        function(req, res) {
-            models.getAll(models.Tag,
-                function(d) {res.json(d);},
-                function(d) {res.json(d);}
-            );
-        }
-    );
-
-    crud(app, prefix + '/:id',
-        undefined,
-        function(req, res) {
-            models.get(models.Tag, req.params.id,
-                function(d) {res.json(d);},
-                function(d) {error(res, MSGS.notFound, 404);}
-            );
-        },
-        function(req, res) {
-            models.update(models.Tag, req.params.id, req.body,
-                function(d) {res.json(d);},
+            models.update(model, req.params.id, req.body, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
         },
         function(req, res) {
             // TODO: auth, error(res, MSGS.del, 400)
-            models.del(models.Tag, req.params.id,
-                function(d) {res.json(d);},
+            models.del(model, req.params.id, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
         }
     );
-}
 
-function initLicenses(app) {
-    var prefix = '/apiv1/licenses';
-
-    crud(app, prefix,
-        function(req, res) {
-            res.json('create licenses');
-        },
-        function(req, res) {
-            res.json(models.getAll(models.License));
-        },
-        function(req, res) {
-            res.json('update licenses');
-        },
-        function(req, res) {
-            res.json('delete licenses');
-        }
-    );
-
-    crud(app, prefix + '/:id',
-        function(req, res) {
-            res.json('create license');
-        },
-        function(req, res) {
-            res.json('get license');
-        },
-        function(req, res) {
-            res.json('update license');
-        },
-        function(req, res) {
-            res.json('delete license');
-        }
-    );
 }
 
 function crud(app, url, post, get, put, del) {
