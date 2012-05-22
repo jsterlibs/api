@@ -51,6 +51,14 @@ var Tag = new Schema({
     deleted: {type: Boolean, 'default': false}
 });
 
+function get(model, id, okCb, errCb) {
+    model.findById(id, function(err, data) {
+        if(err) return errCb(err);
+
+        okCb(data);
+    });
+}
+
 function create(model, data, okCb, errCb) {
     var ob = new model(data);
 
@@ -69,10 +77,17 @@ function getAll(model, okCb, errCb) {
     });
 }
 
+function update(model, data, okCb, errCb) {
+    // TODO
+    //model.findById(data.id);
+}
+
 exports.License = mongoose.model('License', License);
 exports.Library = mongoose.model('Library', Library);
 exports.Tag = mongoose.model('Tag', Tag);
 
+exports.get = get;
 exports.create = create;
 exports.getAll = getAll;
+exports.update = update;
 

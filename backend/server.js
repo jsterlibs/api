@@ -5,7 +5,8 @@ var models = require('./models');
 
 var DB = 'localhost/jswiki';
 var MSGS = {
-    del: "Sorry, it's not possible to delete this resource"
+    del: "Sorry, it's not possible to delete this resource",
+    notFound: "Sorry, unable to find this resource"
 };
 
 main();
@@ -52,11 +53,12 @@ function initLibraries(app) {
     );
 
     crud(app, prefix + '/:id',
+        undefined,
         function(req, res) {
-            res.json('create library');
-        },
-        function(req, res) {
-            res.json('get library');
+            models.get(models.Library, req.params.id,
+                function(d) {res.json(d);},
+                function(d) {error(res, MSGS.notFound, 404);}
+            );
         },
         function(req, res) {
             res.json('update library');
