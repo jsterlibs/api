@@ -77,9 +77,18 @@ function getAll(model, okCb, errCb) {
     });
 }
 
-function update(model, data, okCb, errCb) {
-    // TODO
-    //model.findById(data.id);
+function update(model, id, data, okCb, errCb) {
+    get(model, id, function(ob) {
+        for(var k in data) {
+            ob[k] = data[k];
+        }
+
+        return ob.save(function(err) {
+            if(err) return errCb(err);
+
+            okCb(ob);
+        });
+    }, errCb);
 }
 
 exports.License = mongoose.model('License', License);

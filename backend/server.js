@@ -61,7 +61,10 @@ function initLibraries(app) {
             );
         },
         function(req, res) {
-            res.json('update library');
+            models.update(models.Library, req.params.id, req.body,
+                function(d) {res.json(d);},
+                function(d) {error(res, MSGS.notFound, 404);}
+            );
         },
         function(req, res) {
             // trigger only if the api key doesn't provide rights
