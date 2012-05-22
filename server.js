@@ -33,7 +33,7 @@ function initLibraries(app) {
             res.json('create libraries');
         },
         function(req, res) {
-            res.json('get libraries');
+            res.json(models.getAll(models.Library));
         },
         function(req, res) {
             res.json('update libraries');
@@ -97,7 +97,7 @@ function initTags(app) {
             res.json('create tags');
         },
         function(req, res) {
-            res.json('get tags');
+            res.json(models.getAll(models.Tag));
         },
         function(req, res) {
             res.json('update tags');
