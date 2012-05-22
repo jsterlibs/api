@@ -3,6 +3,9 @@ var express = require('express');
 var mongoose = require('mongoose');
 
 var DB = 'localhost/jswiki';
+var MSGS = {
+    del: "Sorry, it's not possible to delete this resource"
+};
 
 main();
 
@@ -33,7 +36,9 @@ function initLibraries(app) {
             res.json('update libraries');
         },
         function(req, res) {
-            res.json('delete libraries');
+            // trigger only if the api key doesn't provide rights
+            error(res, MSGS.del, 400);
+            // else set delete flag
         }
     );
 
@@ -90,5 +95,9 @@ function crud(app, url, post, get, put, del) {
     app.get(url, get);
     app.put(url, put);
     app.del(url, del);
+}
+
+function error(res, msg, code) {
+    res.json({errors: [{message: msg}]}, code);
 }
 
