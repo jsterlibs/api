@@ -1,0 +1,25 @@
+{
+    "name": "jswiki-rest",
+    "private": true,
+    "description": "REST API for jswiki",
+    "author": "Juho Vepsalainen <bebraw@gmail.com>",
+    "version": "0.1.0",
+
+    "dependencies": {
+        "express": ">= 2.5.9",
+        "mongoose": ">= 2.6.4"
+    },
+
+    "repository": {
+        "type": "git",
+        "url": "https://bebraw@github.com/bebraw/jswiki-rest.git"
+    },
+
+    "homepage": "https://github.com/bebraw/jswiki-rest",
+
+    "bugs": {
+        "url": "https://github.com/bebraw/jswiki-rest/issues"
+    },
+
+    "keywords": ["rest"]
+}
