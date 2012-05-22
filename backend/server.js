@@ -48,14 +48,6 @@ function initLibraries(app) {
                 function(d) {res.json(d);},
                 function(d) {res.json(d);}
             );
-        },
-        function(req, res) {
-            res.json('update libraries');
-        },
-        function(req, res) {
-            // trigger only if the api key doesn't provide rights
-            error(res, MSGS.del, 400);
-            // else set delete flag
         }
     );
 
@@ -70,7 +62,8 @@ function initLibraries(app) {
             res.json('update library');
         },
         function(req, res) {
-            res.json('delete library');
+            // trigger only if the api key doesn't provide rights
+            error(res, MSGS.del, 400);
         }
     );
 
@@ -174,10 +167,28 @@ function initLicenses(app) {
 }
 
 function crud(app, url, post, get, put, del) {
-    app.post(url, post);
-    app.get(url, get);
-    app.put(url, put);
-    app.del(url, del);
+    var allowed = getAllowed();
+
+    function getAllowed() {
+        var ret = [];
+
+        if(post) ret.push('POST');
+        if(get) ret.push('GET');
+        if(put) ret.push('PUT');
+        if(del) ret.push('DELETE');
+
+        return ret.join(', ');
+    }
+
+    function notAllowed(req, res) {
+        res.header('Allow', allowed);
+        res.send(403);
+    }
+
+    app.post(url, post || notAllowed);
+    app.get(url, get || notAllowed);
+    app.put(url, put || notAllowed);
+    app.del(url, del || notAllowed);
 }
 
 function error(res, msg, code) {
