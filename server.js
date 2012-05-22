@@ -25,7 +25,9 @@ function initREST(app) {
 }
 
 function initLibraries(app) {
-    crud(app, '/apiv1/libraries',
+    var prefix = '/apiv1/libraries';
+
+    crud(app, prefix,
         function(req, res) {
             res.json('create libraries');
         },
@@ -42,7 +44,7 @@ function initLibraries(app) {
         }
     );
 
-    crud(app, '/apiv1/libraries/:id',
+    crud(app, prefix + '/:id',
         function(req, res) {
             res.json('create library');
         },
@@ -54,6 +56,21 @@ function initLibraries(app) {
         },
         function(req, res) {
             res.json('delete library');
+        }
+    );
+
+    crud(app, prefix + '/:id/tags',
+        function(req, res) {
+            res.json('create tags');
+        },
+        function(req, res) {
+            res.json('get tags');
+        },
+        function(req, res) {
+            res.json('update tags');
+        },
+        function(req, res) {
+            res.json('delete tags');
         }
     );
 }
