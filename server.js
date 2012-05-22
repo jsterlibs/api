@@ -15,6 +15,12 @@ function main() {
 
     mongoose.connect('mongodb://' + DB);
 
+    app.configure(function() {
+        app.use(express.methodOverride()); // handles PUT
+        app.use(express.bodyParser()); // handles POST
+        app.use(app.router);
+    });
+
     initREST(app);
 
     app.listen(8000);
@@ -31,10 +37,17 @@ function initLibraries(app) {
 
     crud(app, prefix,
         function(req, res) {
-            res.json('create libraries');
+            // TODO: auth
+            models.create(models.Library, req.body,
+                function(d) {res.json(d);},
+                function(d) {res.json(d);}
+            );
         },
         function(req, res) {
-            res.json(models.getAll(models.Library));
+            models.getAll(models.Library,
+                function(d) {res.json(d);},
+                function(d) {res.json(d);}
+            );
         },
         function(req, res) {
             res.json('update libraries');
