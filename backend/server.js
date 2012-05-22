@@ -74,36 +74,6 @@ function initLibraries(app) {
             );
         }
     );
-
-    crud(app, prefix + '/:id/tags',
-        function(req, res) {
-            res.json('create tags');
-        },
-        function(req, res) {
-            res.json('get tags');
-        },
-        function(req, res) {
-            res.json('update tags');
-        },
-        function(req, res) {
-            res.json('delete tags');
-        }
-    );
-
-    crud(app, prefix + '/:id/followers',
-        function(req, res) {
-            res.json('create followers');
-        },
-        function(req, res) {
-            res.json('get followers');
-        },
-        function(req, res) {
-            res.json('update followers');
-        },
-        function(req, res) {
-            res.json('delete followers');
-        }
-    );
 }
 
 function initTags(app) {
@@ -111,31 +81,40 @@ function initTags(app) {
 
     crud(app, prefix,
         function(req, res) {
-            res.json('create tags');
+            // TODO: auth
+            models.create(models.Tag, req.body,
+                function(d) {res.json(d);},
+                function(d) {res.json(d);}
+            );
         },
         function(req, res) {
-            res.json(models.getAll(models.Tag));
-        },
-        function(req, res) {
-            res.json('update tags');
-        },
-        function(req, res) {
-            res.json('delete tags');
+            models.getAll(models.Tag,
+                function(d) {res.json(d);},
+                function(d) {res.json(d);}
+            );
         }
     );
 
     crud(app, prefix + '/:id',
+        undefined,
         function(req, res) {
-            res.json('create tag');
+            models.get(models.Tag, req.params.id,
+                function(d) {res.json(d);},
+                function(d) {error(res, MSGS.notFound, 404);}
+            );
         },
         function(req, res) {
-            res.json('get tag');
+            models.update(models.Tag, req.params.id, req.body,
+                function(d) {res.json(d);},
+                function(d) {error(res, MSGS.notFound, 404);}
+            );
         },
         function(req, res) {
-            res.json('update tag');
-        },
-        function(req, res) {
-            res.json('delete tag');
+            // TODO: auth, error(res, MSGS.del, 400)
+            models.del(models.Tag, req.params.id,
+                function(d) {res.json(d);},
+                function(d) {error(res, MSGS.notFound, 404);}
+            );
         }
     );
 }

@@ -30,6 +30,7 @@ var Library = new Schema({
     description: {type: String},
     followers: {type: [Number]},
     versions: {type: [Version]},
+    tags: {type: [Tag]},
 
     // GitHub specific info
     // as this is going to be fetched dynamically via their API,
