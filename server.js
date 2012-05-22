@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var express = require('express');
 var mongoose = require('mongoose');
+var models = require('./models');
 
 var DB = 'localhost/jswiki';
 var MSGS = {
@@ -74,18 +75,18 @@ function initLibraries(app) {
         }
     );
 
-    crud(app, prefix + '/:id/watchers',
+    crud(app, prefix + '/:id/followers',
         function(req, res) {
-            res.json('create watchers');
+            res.json('create followers');
         },
         function(req, res) {
-            res.json('get watchers');
+            res.json('get followers');
         },
         function(req, res) {
-            res.json('update watchers');
+            res.json('update followers');
         },
         function(req, res) {
-            res.json('delete watchers');
+            res.json('delete followers');
         }
     );
 }
