@@ -67,8 +67,11 @@ function initLibraries(app) {
             );
         },
         function(req, res) {
-            // trigger only if the api key doesn't provide rights
-            error(res, MSGS.del, 400);
+            // TODO: auth, error(res, MSGS.del, 400)
+            models.del(models.Library, req.params.id,
+                function(d) {res.json(d);},
+                function(d) {error(res, MSGS.notFound, 404);}
+            );
         }
     );
 

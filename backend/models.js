@@ -63,17 +63,15 @@ function create(model, data, okCb, errCb) {
     var ob = new model(data);
 
     ob.save(function(err, d) {
-        if(err) return errCb(err);
-
-        okCb(d);
+        if(err) errCb(err);
+        else okCb(d);
     });
 }
 
 function getAll(model, okCb, errCb) {
     model.find({}, function(err, data) {
-        if(err) return errCb(err);
-
-        okCb(data);
+        if(err) errCb(err);
+        else okCb(data);
     });
 }
 
@@ -84,9 +82,17 @@ function update(model, id, data, okCb, errCb) {
         }
 
         return ob.save(function(err) {
-            if(err) return errCb(err);
+            if(err) errCb(err);
+            else okCb(ob);
+        });
+    }, errCb);
+}
 
-            okCb(ob);
+function del(model, id, okCb, errCb) {
+    get(model, id, function(ob) {
+        ob.remove(function(err, d) {
+            if(err) errCb(err);
+            else okCb(d);
         });
     }, errCb);
 }
@@ -99,4 +105,5 @@ exports.get = get;
 exports.create = create;
 exports.getAll = getAll;
 exports.update = update;
+exports.del = del;
 
