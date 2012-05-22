@@ -23,6 +23,7 @@ function main() {
 function initREST(app) {
     initLibraries(app);
     initTags(app);
+    initLicenses(app);
 }
 
 function initLibraries(app) {
@@ -119,6 +120,38 @@ function initTags(app) {
         },
         function(req, res) {
             res.json('delete tag');
+        }
+    );
+}
+
+function initLicenses(app) {
+    crud(app, '/apiv1/licenses',
+        function(req, res) {
+            res.json('create licenses');
+        },
+        function(req, res) {
+            res.json(models.getAll(models.License));
+        },
+        function(req, res) {
+            res.json('update licenses');
+        },
+        function(req, res) {
+            res.json('delete licenses');
+        }
+    );
+
+    crud(app, '/apiv1/licenses/:id',
+        function(req, res) {
+            res.json('create license');
+        },
+        function(req, res) {
+            res.json('get license');
+        },
+        function(req, res) {
+            res.json('update license');
+        },
+        function(req, res) {
+            res.json('delete license');
         }
     );
 }
