@@ -93,7 +93,9 @@ function initLibraries(app) {
 }
 
 function initTags(app) {
-    crud(app, '/apiv1/tags',
+    var prefix = '/apiv1/tags';
+
+    crud(app, prefix,
         function(req, res) {
             res.json('create tags');
         },
@@ -108,7 +110,7 @@ function initTags(app) {
         }
     );
 
-    crud(app, '/apiv1/tags/:id',
+    crud(app, prefix + '/:id',
         function(req, res) {
             res.json('create tag');
         },
@@ -125,7 +127,9 @@ function initTags(app) {
 }
 
 function initLicenses(app) {
-    crud(app, '/apiv1/licenses',
+    var prefix = '/apiv1/licenses';
+
+    crud(app, prefix,
         function(req, res) {
             res.json('create licenses');
         },
@@ -140,7 +144,7 @@ function initLicenses(app) {
         }
     );
 
-    crud(app, '/apiv1/licenses/:id',
+    crud(app, prefix + '/:id',
         function(req, res) {
             res.json('create license');
         },
