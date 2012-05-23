@@ -1,0 +1,24 @@
+{
+    "name": "jswiki.org-crawler",
+    "private": true,
+    "description": "Crawler for jswiki.org",
+    "author": "Juho Vepsalainen <bebraw@gmail.com>",
+    "version": "0.1.0",
+
+    "dependencies": {
+        "github": ">= 0.1.1"
+    },
+
+    "repository": {
+        "type": "git",
+        "url": "https://bebraw@github.com/bebraw/jswiki.org.git"
+    },
+
+    "homepage": "https://github.com/bebraw/jswiki.org",
+
+    "bugs": {
+        "url": "https://github.com/bebraw/jswiki.org/issues"
+    },
+
+    "keywords": ["crawler"]
+}
