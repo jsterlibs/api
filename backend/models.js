@@ -4,7 +4,11 @@ var ObjectId = Schema.ObjectId;
 
 var License = new Schema({
     name: {type: String, required: true},
-    url: {type: String}
+    url: {type: String},
+
+    // model metadata
+    created: {type: Date, 'default': Date.now},
+    deleted: {type: Boolean, 'default': false}
 });
 
 var Version = new Schema({
@@ -20,6 +24,7 @@ var Version = new Schema({
 
     published: {type: Date},
 
+    // model metadata
     created: {type: Date, 'default': Date.now},
     deleted: {type: Boolean, 'default': false}
 });
@@ -40,6 +45,7 @@ var Library = new Schema({
     //forks: {type: Number},
     //downloads: {type: Number},
 
+    // model metadata
     created: {type: Date, 'default': Date.now},
     deleted: {type: Boolean, 'default': false}
 });
@@ -49,6 +55,7 @@ var Tag = new Schema({
     name: {type: String, required: true},
     children: {type: [Tag]},
 
+    // model metadata
     created: {type: Date, 'default': Date.now},
     deleted: {type: Boolean, 'default': false}
 });
