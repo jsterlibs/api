@@ -13,27 +13,48 @@ function main() {
 
 function fetchInfo(url, errCb, okCb) {
     var parts = url.split('/').filter(id).slice(-2);
+    var user = parts[0];
+    var repo = parts[1];
+
     github.repos.get({
-        user: parts[0],
-        repo: parts[1]
+        user: user,
+        repo: repo
     }, function(err, d) {
         if(err) errCb(err);
         else ok(d);
     });
 
     function ok(d) {
-        okCb({
+        versions({
             name: d.name,
             url: d.html_url,
             homepage: d.homepage,
-            description: d.description,
-            versions: versions(d)
+            description: d.description
+            // TODO: licenses
         });
     }
 
-    function versions(d) {
-        // TODO
-        return [];
+    function versions(data) {
+        // XXX: does not work ok with over 100 tags (pagination!)
+        github.repos.getTags({
+            user: user,
+            repo: repo,
+            per_page: 100
+        }, function(err, d) {
+            if(err) errCb(err);
+            else {
+                data.versions = d.map(function(o) {
+                    return {
+                        zip: o.zipball_url,
+                        tar: o.tarball_url,
+                        name: o.name
+                        // TODO: size: ???
+                    };
+                });
+
+                okCb(data);
+            }
+        });
     }
 }
 
