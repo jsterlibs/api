@@ -8,7 +8,7 @@ var License = schema({
 var Version = schema({
     url: {type: String},
     downloadUrl: {type: String},
-    number: {type: String, required: true},
+    name: {type: String, required: true},
     license: {type: [License]},
     size: {type: String},
 
