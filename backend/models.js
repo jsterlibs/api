@@ -6,8 +6,8 @@ var License = schema({
 });
 
 var Version = schema({
-    url: {type: String},
-    downloadUrl: {type: String},
+    zip: {type: String},
+    tar: {type: String},
     name: {type: String, required: true},
     license: {type: [License]},
     size: {type: String},
