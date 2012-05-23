@@ -9,7 +9,6 @@ var Version = schema({
     zip: {type: String},
     tar: {type: String},
     name: {type: String, required: true},
-    license: {type: [License]},
     size: {type: String},
 
     // it's probably enough to track these on Library level instead of Version
@@ -26,6 +25,7 @@ var Library = schema({
     description: {type: String},
     followers: {type: [Number]},
     versions: {type: [Version]},
+    license: {type: [License]},
 
     tags: {type: [Tag]}
 });
