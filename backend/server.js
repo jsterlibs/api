@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+var fs = require('fs');
 var express = require('express');
 var mongoose = require('mongoose');
 var models = require('./models');
@@ -12,7 +13,10 @@ var MSGS = {
 main();
 
 function main() {
-    var app = express.createServer();
+    var app = express.createServer({
+        key: fs.readFileSync('certs/key.pem'),
+        cert: fs.readFileSync('certs/cert.pem')
+    });
 
     mongoose.connect('mongodb://' + DB);
 

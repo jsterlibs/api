@@ -9,7 +9,10 @@ jswiki.org rewrite.
 ## Backend
 
 In order to test, run mongod and execute server.js. Try poking the API after
-this.
+this. Since the API has been protected using SSL, surf to https://. Note that
+if you use some tool such as REST Console at Chrome, you'll need to accept the
+dummy cerficate first using your browser. Otherwise it might not work as
+expected.
 
 ### Usage
 
