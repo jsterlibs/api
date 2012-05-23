@@ -54,7 +54,7 @@ var Tag = new Schema({
 
 function get(model, id, okCb, errCb) {
     model.findById(id, function(err, data) {
-        if(err) return errCb(err);
+        if(err || data.deleted) return errCb(err);
 
         okCb(data);
     });
