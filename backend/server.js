@@ -40,7 +40,7 @@ function initREST(app) {
         'licenses': models.License
     };
 
-    for(var k in apis) initCrud(app, '/apiv1/' + k, apis[k]);
+    for(var k in apis) initCrud(app, '/api/v1/' + k, apis[k]);
 }
 
 function initCrud(app, prefix, model) {
