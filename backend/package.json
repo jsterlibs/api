@@ -1,5 +1,5 @@
 {
-    "name": "jswiki.org backend",
+    "name": "jswiki.org-backend",
     "private": true,
     "description": "Backend and REST API for jswiki.org",
     "author": "Juho Vepsalainen <bebraw@gmail.com>",
