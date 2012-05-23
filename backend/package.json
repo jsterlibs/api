@@ -1,7 +1,7 @@
 {
-    "name": "jswiki-rest",
+    "name": "jswiki.org backend",
     "private": true,
-    "description": "REST API for jswiki",
+    "description": "Backend and REST API for jswiki.org",
     "author": "Juho Vepsalainen <bebraw@gmail.com>",
     "version": "0.1.0",
 
@@ -12,13 +12,13 @@
 
     "repository": {
         "type": "git",
-        "url": "https://bebraw@github.com/bebraw/jswiki-rest.git"
+        "url": "https://bebraw@github.com/bebraw/jswiki.org.git"
     },
 
-    "homepage": "https://github.com/bebraw/jswiki-rest",
+    "homepage": "https://github.com/bebraw/jswiki.org",
 
     "bugs": {
-        "url": "https://github.com/bebraw/jswiki-rest/issues"
+        "url": "https://github.com/bebraw/jswiki.org/issues"
     },
 
     "keywords": ["rest"]
