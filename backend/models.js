@@ -25,7 +25,7 @@ var Library = schema({
     description: {type: String},
     followers: {type: [Number]},
     versions: {type: [Version]},
-    license: {type: [License]},
+    licenses: {type: [License]},
 
     tags: {type: [Tag]}
 });
