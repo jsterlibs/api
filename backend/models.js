@@ -27,6 +27,7 @@ var Version = new Schema({
 var Library = new Schema({
     name: {type: String, required: true},
     url: {type: String, required: true},
+    homepage: {type: String},
     description: {type: String},
     followers: {type: [Number]},
     versions: {type: [Version]},
