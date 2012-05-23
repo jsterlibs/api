@@ -30,7 +30,6 @@ function fetchInfo(url, errCb, okCb) {
             url: d.html_url,
             homepage: d.homepage,
             description: d.description
-            // TODO: licenses
         });
     }
 
@@ -52,9 +51,47 @@ function fetchInfo(url, errCb, okCb) {
                     };
                 });
 
-                okCb(data);
+                license(data);
             }
         });
+    }
+
+    function license(data) {
+        okCb(data);
+
+        // it might be easier just to query urls directly
+        // example: raw.github.com/:user/:repo/master/LICENSE
+        // if that exists, link there!
+        // if no master branch exists, check out gh-pages (special case)
+
+        // TODO: might want to try to dig the licensing info from README too
+
+        // XXX: possible pagination problem here too
+        /*
+        github.repos.getBranches({
+            user: user,
+            repo: repo,
+            per_page: 100
+        }, function(err, d) {
+            if(err) errCb(err);
+            var sha = (d.filter(function(o) {
+                return o.name == 'master';
+            }) || d)[0].commit.sha;
+
+            github.gitdata.getTree({
+                user: user,
+                repo: repo,
+                sha: sha
+            }, function(err, d) {
+                if(err) errCb(err);
+                console.log(d);
+
+                // XXX: got access to blobs now
+                // dig needed info here somehow
+                okCb(data);
+            });
+        });
+        */
     }
 }
 
