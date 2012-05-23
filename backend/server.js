@@ -3,10 +3,12 @@ var fs = require('fs');
 var express = require('express');
 var mongoose = require('mongoose');
 var models = require('./models');
+var config = require('./config');
 
+var APIKEY = config.APIKEY;
 var DB = 'localhost/jswiki';
 var MSGS = {
-    del: "Sorry, it's not possible to delete this resource",
+    unauthorized: "Sorry, unable to access this resource. Check your auth",
     notFound: "Sorry, unable to find this resource"
 };
 
@@ -46,36 +48,41 @@ function initCrud(app, prefix, model) {
         return function(d) {res.json(d);};
     }
 
+    function auth(fn) {
+        return function(req, res) {
+            if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) fn(req, res);
+            else error(res, MSGS.unauthorized);
+        };
+    }
+
     crud(app, prefix,
-        function(req, res) {
-            // TODO: auth
+        auth(function(req, res) {
             models.create(model, req.body, ret(res), ret(res));
-        },
-        function(req, res) {
+        }),
+        auth(function(req, res) {
             models.getAll(model, ret(res), ret(res));
-        }
+        })
     );
 
     crud(app, prefix + '/:id',
         undefined,
-        function(req, res) {
+        auth(function(req, res) {
             models.get(model, req.params.id, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
-        },
-        function(req, res) {
+        }),
+        auth(function(req, res) {
             models.update(model, req.params.id, req.body, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
-        },
-        function(req, res) {
+        }),
+        auth(function(req, res) {
             // TODO: auth, error(res, MSGS.del, 400)
             models.del(model, req.params.id, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
-        }
+        })
     );
-
 }
 
 function crud(app, url, post, get, put, del) {

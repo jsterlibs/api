@@ -14,6 +14,10 @@ if you use some tool such as REST Console at Chrome, you'll need to accept the
 dummy cerficate first using your browser. Otherwise it might not work as
 expected.
 
+You will also need to define backend/config.js that contains exports.APIKEY =
+'some value'. This will be used for authentication in combination with SSL. You
+will need to provide the key as a request parameter (apikey='some value').
+
 ### Usage
 
 /libraries, /tags, /licenses. Ie. GET /libraries returns a list of all
