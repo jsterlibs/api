@@ -1,17 +1,11 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
 
-var License = new Schema({
+var License = schema({
     name: {type: String, required: true},
-    url: {type: String},
-
-    // model metadata
-    created: {type: Date, 'default': Date.now},
-    deleted: {type: Boolean, 'default': false}
+    url: {type: String}
 });
 
-var Version = new Schema({
+var Version = schema({
     url: {type: String},
     downloadUrl: {type: String},
     number: {type: String, required: true},
@@ -22,43 +16,33 @@ var Version = new Schema({
     dependencies: {type: [Library]},
     dependants: [Library],
 
-    published: {type: Date},
-
-    // model metadata
-    created: {type: Date, 'default': Date.now},
-    deleted: {type: Boolean, 'default': false}
+    published: {type: Date}
 });
 
-var Library = new Schema({
+var Library = schema({
     name: {type: String, required: true},
     url: {type: String, required: true},
     homepage: {type: String},
     description: {type: String},
     followers: {type: [Number]},
     versions: {type: [Version]},
-    tags: {type: [Tag]},
 
-    // GitHub specific info
-    // as this is going to be fetched dynamically via their API,
-    // commented out for now
-    //watchers: {type: Number},
-    //forks: {type: Number},
-    //downloads: {type: Number},
-
-    // model metadata
-    created: {type: Date, 'default': Date.now},
-    deleted: {type: Boolean, 'default': false}
+    tags: {type: [Tag]}
 });
 
 // TODO: figure out how to deal with tag synonyms (separate model)
-var Tag = new Schema({
+var Tag = schema({
     name: {type: String, required: true},
-    children: {type: [Tag]},
-
-    // model metadata
-    created: {type: Date, 'default': Date.now},
-    deleted: {type: Boolean, 'default': false}
+    children: {type: [Tag]}
 });
+
+function schema(o) {
+    // metadata
+    o.created = {type: Date, 'default': Date.now};
+    o.deleted = {type: Boolean, 'default': false};
+
+    return new mongoose.Schema(o);
+}
 
 function get(model, id, okCb, errCb) {
     model.findById(id, function(err, data) {
