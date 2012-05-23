@@ -70,8 +70,7 @@ function initCrud(app, prefix, model) {
         },
         function(req, res) {
             // TODO: auth, error(res, MSGS.del, 400)
-            models.update(model, req.params.id, {deleted: true},
-                function(d) {res.json({});},
+            models.del(model, req.params.id, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
         }

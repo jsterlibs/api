@@ -90,12 +90,9 @@ function update(model, id, data, okCb, errCb) {
 }
 
 function del(model, id, okCb, errCb) {
-    get(model, id, function(ob) {
-        ob.remove(function(err, d) {
-            if(err) errCb(err);
-            else okCb(d);
-        });
-    }, errCb);
+    update(model, id, {deleted: true},
+        function() {okCb({});},
+        errCb);
 }
 
 exports.License = mongoose.model('License', License);
