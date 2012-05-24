@@ -57,7 +57,6 @@ function initCrud(app, prefix, model) {
 
     crud(app, prefix,
         auth(function(req, res) {
-            delete req.body.apikey;
             models.create(model, req.body, ret(res), ret(res));
         }),
         auth(function(req, res) {
