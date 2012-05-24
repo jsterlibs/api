@@ -77,7 +77,6 @@ function initCrud(app, prefix, model) {
             );
         }),
         auth(function(req, res) {
-            // TODO: auth, error(res, MSGS.del, 400)
             models.del(model, req.params.id, ret(res),
                 function(d) {error(res, MSGS.notFound, 404);}
             );
