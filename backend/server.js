@@ -22,8 +22,8 @@ function main() {
     }
     else {
         app = express.createServer({
-            key: fs.readFileSync('certs/key.pem'),
-            cert: fs.readFileSync('certs/cert.pem')
+            key: fs.readFileSync(__dirname + '/certs/key.pem'),
+            cert: fs.readFileSync(__dirname + '/certs/cert.pem')
         });
     }
 
