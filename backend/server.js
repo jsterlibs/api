@@ -21,7 +21,7 @@ function mongooseTest() {
         app.use(app.router);
     });
 
-    var db = mongoose.connect(process.env.MONGOHQ_URL);
+    mongoose.connect(process.env.MONGOHQ_URL);
 
     app.listen(process.env.PORT || 8000);
 
@@ -29,7 +29,7 @@ function mongooseTest() {
         date: {type: Date, 'default': Date.now},
         message: String
     });
-    var MsgModel = db.model("messages", MsgSchema);
+    var MsgModel = mongoose.model("messages", MsgSchema);
 
     app.get('/demo', function(req, res) {
         getMessage(
