@@ -41,7 +41,7 @@ function schema(o) {
     o.created = {type: Date, 'default': Date.now};
     o.deleted = {type: Boolean, 'default': false, select: false};
 
-    return new mongoose.Schema(o);
+    return new mongoose.Schema(o, {strict: true});
 }
 
 function get(model, id, okCb, errCb) {
