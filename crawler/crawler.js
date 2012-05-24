@@ -27,7 +27,7 @@ function fetchInfo(url, errCb, okCb) {
     function ok(d) {
         versions({
             name: d.name,
-            url: d.html_url,
+            repository: d.html_url,
             homepage: d.homepage,
             description: d.description
         });
