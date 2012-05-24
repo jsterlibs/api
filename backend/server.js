@@ -15,10 +15,17 @@ var MSGS = {
 main();
 
 function main() {
-    var app = express.createServer({
-        key: fs.readFileSync('certs/key.pem'),
-        cert: fs.readFileSync('certs/cert.pem')
-    });
+    var app;
+
+    if(process.env.NODE_ENV == 'production') {
+        app = express.createServer();
+    }
+    else {
+        app = express.createServer({
+            key: fs.readFileSync('certs/key.pem'),
+            cert: fs.readFileSync('certs/cert.pem')
+        });
+    }
 
     mongoose.connect('mongodb://' + DB);
 
