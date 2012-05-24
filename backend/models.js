@@ -39,14 +39,14 @@ var Tag = schema({
 function schema(o) {
     // metadata
     o.created = {type: Date, 'default': Date.now};
-    o.deleted = {type: Boolean, 'default': false};
+    o.deleted = {type: Boolean, 'default': false, select: false};
 
     return new mongoose.Schema(o);
 }
 
 function get(model, id, okCb, errCb) {
     model.findById(id, function(err, data) {
-        if(err || data.deleted) return errCb(err);
+        if(err) return errCb(err);
 
         okCb(data);
     });
