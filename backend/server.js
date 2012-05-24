@@ -17,7 +17,7 @@ main();
 function main() {
     var app;
 
-    if(process.env.NODE_ENV == 'production' && false) {
+    if(process.env.NODE_ENV == 'production') {
         app = express.createServer();
     }
     else {
