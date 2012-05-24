@@ -1,13 +1,17 @@
 var mongoose = require('mongoose');
+var mongooseTypes = require('mongoose-types');
+
+mongooseTypes.loadTypes(mongoose, "url");
+var Url = mongoose.SchemaTypes.Url;
 
 var License = schema({
     name: {type: String, required: true},
-    url: {type: String}
+    url: {type: Url}
 });
 
 var Version = schema({
-    zip: {type: String},
-    tar: {type: String},
+    zip: {type: Url},
+    tar: {type: Url},
     name: {type: String, required: true},
     size: {type: String},
 
@@ -20,8 +24,8 @@ var Version = schema({
 
 var Library = schema({
     name: {type: String, required: true},
-    url: {type: String, required: true},
-    homepage: {type: String},
+    repository: {type: Url, required: true},
+    homepage: {type: Url},
     description: {type: String},
     followers: {type: [Number]},
     versions: {type: [Version]},
