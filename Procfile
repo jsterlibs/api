@@ -1,1 +1,1 @@
-web: scripts/runserver.sh
+web: node backend/server.sh
