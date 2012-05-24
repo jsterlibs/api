@@ -11,8 +11,8 @@ var MSGS = {
     notFound: "Sorry, unable to find this resource"
 };
 
-mongooseTest();
-//main();
+//mongooseTest();
+main();
 
 function mongooseTest() {
     var app = express.createServer();
@@ -56,7 +56,7 @@ function main() {
     if(process.env.NODE_ENV == 'production') {
         app = express.createServer();
 
-        dbUrl = 'mongodb://localhost/jswiki';
+        dbUrl = process.env.MONGOHQ_URL;
     }
     else {
         app = express.createServer({
@@ -64,7 +64,7 @@ function main() {
             cert: fs.readFileSync(__dirname + '/certs/cert.pem')
         });
 
-        dbUrl = process.env.MONGOHQ_URL;
+        dbUrl = 'mongodb://localhost/jswiki';
     }
 
     mongoose.connect(dbUrl);
