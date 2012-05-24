@@ -62,6 +62,15 @@ function initCrud(app, prefix, model) {
 
     function auth(fn) {
         return function(req, res) {
+            if(process.env.NODE_ENV == 'production') {
+                // http://stackoverflow.com/questions/8152651/how-can-i-check-that-a-request-is-coming-over-https-in-express
+                if(req.headers['x-forwarded-proto'] &&
+                        req.headers['x-forwarded-proto'] === "http") {
+                    error(res, MSGS.unauthorized);
+                    return;
+                }
+            }
+
             if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) fn(req, res);
             else error(res, MSGS.unauthorized);
         };
