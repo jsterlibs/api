@@ -6,7 +6,6 @@ var models = require('./models');
 var config = require('./config');
 
 var APIKEY = config.APIKEY;
-var DB = 'localhost/jswiki';
 var MSGS = {
     unauthorized: "Sorry, unable to access this resource. Check your auth",
     notFound: "Sorry, unable to find this resource"
@@ -16,18 +15,23 @@ main();
 
 function main() {
     var app;
+    var dbUrl;
 
     if(process.env.NODE_ENV == 'production') {
         app = express.createServer();
+
+        dbUrl = 'mongodb://localhost/jswiki';
     }
     else {
         app = express.createServer({
             key: fs.readFileSync(__dirname + '/certs/key.pem'),
             cert: fs.readFileSync(__dirname + '/certs/cert.pem')
         });
+
+        dbUrl = process.env.MONGOHQ_URL;
     }
 
-    mongoose.connect('mongodb://' + DB);
+    mongoose.connect(dbUrl);
 
     app.configure(function() {
         app.use(express.methodOverride()); // handles PUT
