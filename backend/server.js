@@ -11,7 +11,22 @@ var MSGS = {
     notFound: "Sorry, unable to find this resource"
 };
 
-main();
+mongooseTest();
+//main();
+
+function mongooseTest() {
+    mongoose.connect(process.env.MONGOHQ_URL);
+
+    var MsgSchema = new mongoose.Schema({
+        date: {type: Date, 'default': Date.now},
+        message: String
+    });
+    var MsgModel = db.model("messages", MsgSchema);
+    var msg = new MsgModel();
+
+    msg.message = "blurgh";
+    msg.save();
+}
 
 function main() {
     var app;
