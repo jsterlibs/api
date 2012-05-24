@@ -15,7 +15,7 @@ mongooseTest();
 //main();
 
 function mongooseTest() {
-    mongoose.connect(process.env.MONGOHQ_URL);
+    var db = mongoose.connect(process.env.MONGOHQ_URL);
 
     var MsgSchema = new mongoose.Schema({
         date: {type: Date, 'default': Date.now},
