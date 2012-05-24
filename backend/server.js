@@ -15,17 +15,38 @@ mongooseTest();
 //main();
 
 function mongooseTest() {
+    var app = express.createServer();
+
+    app.configure(function() {
+        app.use(app.router);
+    });
+
     var db = mongoose.connect(process.env.MONGOHQ_URL);
+
+    app.listen(process.env.PORT || 8000);
 
     var MsgSchema = new mongoose.Schema({
         date: {type: Date, 'default': Date.now},
         message: String
     });
     var MsgModel = db.model("messages", MsgSchema);
-    var msg = new MsgModel();
 
-    msg.message = "blurgh";
-    msg.save();
+    app.get('/demo', function(req, res) {
+        getMessage(
+            function(d) {res.json(d);},
+            function(d) {res.json(d);}
+        );
+    });
+
+    function getMessage(errCb, okCb) {
+        var msg = new MsgModel();
+
+        msg.message = "blurgh";
+        msg.save(function(err, d) {
+            if(err) errCb(err);
+            else okCb(d);
+        });
+    }
 }
 
 function main() {
