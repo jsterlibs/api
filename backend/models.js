@@ -70,8 +70,11 @@ function create(model, data, okCb, errCb) {
     });
 }
 
-function getAll(model, fields, okCb, errCb) {
-    model.find({}, fields).where('deleted', false).run(function(err, data) {
+function getAll(model, query, okCb, errCb) {
+    var f = query.fields;
+    delete query.fields;
+
+    model.find(query, f).where('deleted', false).run(function(err, data) {
         if(err) errCb(err);
         else okCb(data);
     });

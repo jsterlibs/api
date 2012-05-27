@@ -72,6 +72,7 @@ function initCrud(app, prefix, model) {
             }
 
             if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) {
+                delete req.query.apikey;
                 req.body = parseCommaLists(req.body);
                 req.query = parseCommaLists(req.query);
                 fn(req, res);
@@ -92,7 +93,7 @@ function initCrud(app, prefix, model) {
             models.create(model, req.body, ret(res), ret(res));
         }),
         auth(function(req, res) {
-            models.getAll(model, req.query.fields, ret(res), ret(res));
+            models.getAll(model, req.query, ret(res), ret(res));
         })
     );
 
