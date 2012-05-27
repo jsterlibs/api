@@ -73,6 +73,7 @@ function initCrud(app, prefix, model) {
 
             if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) {
                 req.body = parseCommaLists(req.body);
+                req.query = parseCommaLists(req.query);
                 fn(req, res);
             }
             else error(res, MSGS.unauthorized);
@@ -91,7 +92,7 @@ function initCrud(app, prefix, model) {
             models.create(model, req.body, ret(res), ret(res));
         }),
         auth(function(req, res) {
-            models.getAll(model, ret(res), ret(res));
+            models.getAll(model, req.query.fields, ret(res), ret(res));
         })
     );
 
