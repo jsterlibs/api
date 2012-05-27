@@ -88,24 +88,28 @@ function initCrud(app, prefix, model) {
         };
     }
 
-    var multipleVerbs = {
+    crud(app, prefix, {
         post: auth(function(req, res) {
             models.create(model, req.body, ret(res), ret(res));
         }),
-        get: auth(function(req, res) { // TODO: method=...  put, post, delete
-            models.getAll(model, req.query, ret(res), ret(res));
-        })
-    };
+        get: auth(function(req, res) {
+            var method = req.query.method;
 
-    crud(app, prefix, multipleVerbs);
+            if(method) getOp(this, method)(req, res);
+            else models.getAll(model, req.query, ret(res), ret(res));
+        })
+    });
 
     app.get(prefix + '/count', function(req, res) {
         models.count(model, ret(res), err(res));
     });
 
-    var singleVerbs = {
-        get: auth(function(req, res) { // TODO: method=... put, post, delete
-            models.get(model, req.params.id, req.query.fields, ret(res), err(res));
+    crud(app, prefix + '/:id', {
+        get: auth(function(req, res) {
+            var method = req.query.method;
+
+            if(method) getOp(this, method)(req, res);
+            else models.get(model, req.params.id, req.query.fields, ret(res), err(res));
         }),
         put: auth(function(req, res) {
             models.update(model, req.params.id, req.body, ret(res), err(res));
@@ -113,9 +117,12 @@ function initCrud(app, prefix, model) {
         'delete': auth(function(req, res) {
             models.del(model, req.params.id, ret(res), err(res));
         })
-    };
+    });
 
-    crud(app, prefix + '/:id', singleVerbs);
+    function getOp(verbs, method) {
+        if(method in verbs) return verbs;
+        return notAllowed(verbs);
+    }
 }
 
 function parseCommaLists(o) {
@@ -132,14 +139,16 @@ function parseCommaLists(o) {
 }
 
 function crud(app, url, verbs) {
+    for(var k in verbs) app[k](url, verbs[k] || notAllowed(verbs));
+}
+
+function notAllowed(verbs) {
     var allowed = Object.keys(verbs).map(function(k) {k.toUpperCase();}).join(', ');
 
-    function notAllowed(req, res) {
+    return function(req, res){
         res.header('Allow', allowed);
         res.send(403);
-    }
-
-    for(var k in verbs) app[k](url, verbs[k] || notAllowed);
+    };
 }
 
 function error(res, msg, code) {
