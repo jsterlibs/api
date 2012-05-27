@@ -96,6 +96,13 @@ function del(model, id, okCb, errCb) {
         errCb);
 }
 
+function count(model, okCb, errCb) {
+    model.count({}, function(err, count) {
+        if(err) errCb(err);
+        else okCb(count);
+    });
+}
+
 exports.License = mongoose.model('License', License);
 exports.Library = mongoose.model('Library', Library);
 exports.Tag = mongoose.model('Tag', Tag);
@@ -105,4 +112,5 @@ exports.create = create;
 exports.getAll = getAll;
 exports.update = update;
 exports.del = del;
+exports.count = count;
 

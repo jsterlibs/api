@@ -96,6 +96,10 @@ function initCrud(app, prefix, model) {
         })
     );
 
+    app.get(prefix + '/count', function(req, res) {
+        models.count(model, ret(res), err(res));
+    });
+
     crud(app, prefix + '/:id',
         undefined,
         auth(function(req, res) {
