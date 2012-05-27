@@ -1,8 +1,13 @@
 var mongoose = require('mongoose');
 var mongooseTypes = require('mongoose-types');
+var ObjectId = mongoose.Schema.ObjectId;
 
 mongooseTypes.loadTypes(mongoose, "url");
 var Url = mongoose.SchemaTypes.Url;
+
+function isObjectId(n) {console.log('validating');
+    return mongoose.Schema.ObjectId.isValid(n);
+}
 
 var License = schema({
     name: {type: String, required: true},
@@ -16,8 +21,8 @@ var Version = schema({
     size: {type: String},
 
     // it's probably enough to track these on Library level instead of Version
-    dependencies: {type: [Library]},
-    dependants: {type: [Library]},
+    dependencies: [{type: ObjectId, ref: 'Library', validate: isObjectId}],
+    dependants: [{type: ObjectId, ref: 'Library', validate: isObjectId}],
 
     published: {type: Date}
 });
@@ -28,16 +33,16 @@ var Library = schema({
     homepage: {type: Url},
     description: {type: String},
     followers: {type: [Number]},
-    versions: {type: [Version]},
-    licenses: {type: [License]},
+    versions: [{type: ObjectId, ref: 'Version', validate: isObjectId}],
+    licenses: [{type: ObjectId, ref: 'License', validate: isObjectId}],
 
-    tags: {type: [Tag]}
+    tags: [{type: ObjectId, ref: 'Tag', validate: isObjectId}]
 });
 
 // TODO: figure out how to deal with tag synonyms (separate model)
 var Tag = schema({
     name: {type: String, required: true},
-    children: {type: [Tag]}
+    children: [{type: ObjectId, ref: 'Tag', validate: isObjectId}]
 });
 
 function schema(o) {

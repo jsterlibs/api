@@ -76,6 +76,13 @@ function initCrud(app, prefix, model) {
         };
     }
 
+    function err(res) {
+        return function(e) {
+            if(e) res.json(e);
+            else error(res, MSGS.notFound, 404);
+        };
+    }
+
     crud(app, prefix,
         auth(function(req, res) {
             models.create(model, req.body, ret(res), ret(res));
@@ -88,19 +95,13 @@ function initCrud(app, prefix, model) {
     crud(app, prefix + '/:id',
         undefined,
         auth(function(req, res) {
-            models.get(model, req.params.id, ret(res),
-                function(d) {error(res, MSGS.notFound, 404);}
-            );
+            models.get(model, req.params.id, ret(res), err(res));
         }),
         auth(function(req, res) {
-            models.update(model, req.params.id, req.body, ret(res),
-                function(d) {error(res, MSGS.notFound, 404);}
-            );
+            models.update(model, req.params.id, req.body, ret(res), err(res));
         }),
         auth(function(req, res) {
-            models.del(model, req.params.id, ret(res),
-                function(d) {error(res, MSGS.notFound, 404);}
-            );
+            models.del(model, req.params.id, ret(res), err(res));
         })
     );
 }
