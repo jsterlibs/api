@@ -88,31 +88,35 @@ function initCrud(app, prefix, model) {
         };
     }
 
-    crud(app, prefix,
-        auth(function(req, res) {
+    var multipleVerbs = {
+        post: auth(function(req, res) {
             models.create(model, req.body, ret(res), ret(res));
         }),
-        auth(function(req, res) {
+        get: auth(function(req, res) { // TODO: method=...  put, post, delete
             models.getAll(model, req.query, ret(res), ret(res));
         })
-    );
+    };
+
+    crud(app, prefix, multipleVerbs);
 
     app.get(prefix + '/count', function(req, res) {
         models.count(model, ret(res), err(res));
     });
 
-    crud(app, prefix + '/:id',
-        undefined,
-        auth(function(req, res) {
+    var singleVerbs = {
+        post: undefined,
+        get: auth(function(req, res) { // TODO: method=... put, post, delete
             models.get(model, req.params.id, req.query.fields, ret(res), err(res));
         }),
-        auth(function(req, res) {
+        put: auth(function(req, res) {
             models.update(model, req.params.id, req.body, ret(res), err(res));
         }),
-        auth(function(req, res) {
+        del: auth(function(req, res) {
             models.del(model, req.params.id, ret(res), err(res));
         })
-    );
+    };
+
+    crud(app, prefix + '/:id', singleVerbs);
 }
 
 function parseCommaLists(o) {
@@ -128,16 +132,16 @@ function parseCommaLists(o) {
     return ret;
 }
 
-function crud(app, url, post, get, put, del) {
+function crud(app, url, verbs) {
     var allowed = getAllowed();
 
     function getAllowed() {
         var ret = [];
 
-        if(post) ret.push('POST');
-        if(get) ret.push('GET');
-        if(put) ret.push('PUT');
-        if(del) ret.push('DELETE');
+        if(verbs.post) ret.push('POST');
+        if(verbs.get) ret.push('GET');
+        if(verbs.put) ret.push('PUT');
+        if(verbs.del) ret.push('DELETE');
 
         return ret.join(', ');
     }
@@ -147,10 +151,7 @@ function crud(app, url, post, get, put, del) {
         res.send(403);
     }
 
-    app.post(url, post || notAllowed);
-    app.get(url, get || notAllowed);
-    app.put(url, put || notAllowed);
-    app.del(url, del || notAllowed);
+    for(var k in verbs) app[k](url, verbs[k] || notAllowed);
 }
 
 function error(res, msg, code) {
