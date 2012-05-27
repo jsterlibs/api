@@ -114,6 +114,6 @@ exports.get = get;
 exports.create = create;
 exports.getAll = getAll;
 exports.update = update;
-exports.del = del;
+exports['delete'] = del;
 exports.count = count;
 

@@ -104,14 +104,13 @@ function initCrud(app, prefix, model) {
     });
 
     var singleVerbs = {
-        post: undefined,
         get: auth(function(req, res) { // TODO: method=... put, post, delete
             models.get(model, req.params.id, req.query.fields, ret(res), err(res));
         }),
         put: auth(function(req, res) {
             models.update(model, req.params.id, req.body, ret(res), err(res));
         }),
-        del: auth(function(req, res) {
+        'delete': auth(function(req, res) {
             models.del(model, req.params.id, ret(res), err(res));
         })
     };
@@ -136,14 +135,7 @@ function crud(app, url, verbs) {
     var allowed = getAllowed();
 
     function getAllowed() {
-        var ret = [];
-
-        if(verbs.post) ret.push('POST');
-        if(verbs.get) ret.push('GET');
-        if(verbs.put) ret.push('PUT');
-        if(verbs.del) ret.push('DELETE');
-
-        return ret.join(', ');
+        return Object.keys(verbs).map(function(k) {k.toUpperCase();}).join(', ');
     }
 
     function notAllowed(req, res) {
