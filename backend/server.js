@@ -71,7 +71,10 @@ function initCrud(app, prefix, model) {
                 }
             }
 
-            if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) fn(req, res);
+            if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) {
+                req.body = parseCommaLists(req.body);
+                fn(req, res);
+            }
             else error(res, MSGS.unauthorized);
         };
     }
@@ -104,6 +107,19 @@ function initCrud(app, prefix, model) {
             models.del(model, req.params.id, ret(res), err(res));
         })
     );
+}
+
+function parseCommaLists(o) {
+    var ret = {};
+
+    for(var k in o) {
+        var v = o[k];
+        var parts = v.split(',');
+
+        ret[k] = parts.length > 1? parts: v;
+    }
+
+    return ret;
 }
 
 function crud(app, url, post, get, put, del) {
