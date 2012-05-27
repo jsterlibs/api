@@ -17,7 +17,7 @@ var Version = schema({
 
     // it's probably enough to track these on Library level instead of Version
     dependencies: {type: [Library]},
-    dependants: [Library],
+    dependants: {type: [Library]},
 
     published: {type: Date}
 });
