@@ -132,11 +132,7 @@ function parseCommaLists(o) {
 }
 
 function crud(app, url, verbs) {
-    var allowed = getAllowed();
-
-    function getAllowed() {
-        return Object.keys(verbs).map(function(k) {k.toUpperCase();}).join(', ');
-    }
+    var allowed = Object.keys(verbs).map(function(k) {k.toUpperCase();}).join(', ');
 
     function notAllowed(req, res) {
         res.header('Allow', allowed);
