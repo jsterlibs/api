@@ -53,8 +53,8 @@ function schema(o) {
     return new mongoose.Schema(o, {strict: true});
 }
 
-function get(model, id, okCb, errCb) {
-    model.findById(id, function(err, data) {
+function get(model, id, fields, okCb, errCb) {
+    model.findById(id, fields, function(err, data) {
         if(err) return errCb(err);
 
         okCb(data);
@@ -78,7 +78,7 @@ function getAll(model, fields, okCb, errCb) {
 }
 
 function update(model, id, data, okCb, errCb) {
-    get(model, id, function(ob) {
+    get(model, id, undefined, function(ob) {
         for(var k in data) {
             ob[k] = data[k];
         }

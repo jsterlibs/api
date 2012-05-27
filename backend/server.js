@@ -99,7 +99,7 @@ function initCrud(app, prefix, model) {
     crud(app, prefix + '/:id',
         undefined,
         auth(function(req, res) {
-            models.get(model, req.params.id, ret(res), err(res));
+            models.get(model, req.params.id, req.query.fields, ret(res), err(res));
         }),
         auth(function(req, res) {
             models.update(model, req.params.id, req.body, ret(res), err(res));
