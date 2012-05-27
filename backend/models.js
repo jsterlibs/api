@@ -5,7 +5,7 @@ var ObjectId = mongoose.Schema.ObjectId;
 mongooseTypes.loadTypes(mongoose, "url");
 var Url = mongoose.SchemaTypes.Url;
 
-function isObjectId(n) {console.log('validating');
+function isObjectId(n) {
     return mongoose.Schema.ObjectId.isValid(n);
 }
 
