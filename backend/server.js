@@ -46,13 +46,11 @@ function main() {
 }
 
 function initAPI(app) {
-    var apis = {
+    initREST(app, '/api/v1/', {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
-    };
-
-    for(var k in apis) initREST(app, '/api/v1/' + k, apis[k], models, auth);
+    }, models, auth);
 }
 
 function auth(fn) {
@@ -74,37 +72,41 @@ function auth(fn) {
     };
 }
 
-function initREST(app, prefix, model, models, auth) {
-    crud(app, prefix, handlers({
-        post: function(req, res) {
-            models.create(model, req.body, ret(res), ret(res));
-        },
-        get: function(req, res) {
-            var method = req.query.method;
+function initREST(app, prefix, apis, models, auth) {
+    for(var k in apis) init(prefix + k, apis[k]);
 
-            if(method) getOp(this, method)(req, res);
-            else models.getAll(model, req.query, ret(res), ret(res));
-        }
-    }));
+    function init(name, model) {
+        crud(app, name, handlers({
+            post: function(req, res) {
+                models.create(model, req.body, ret(res), ret(res));
+            },
+            get: function(req, res) {
+                var method = req.query.method;
 
-    app.get(prefix + '/count', handle(function(req, res) {
-        models.count(model, ret(res), err(res));
-    }));
+                if(method) getOp(this, method)(req, res);
+                else models.getAll(model, req.query, ret(res), ret(res));
+            }
+        }));
 
-    crud(app, prefix + '/:id', handlers({
-        get: function(req, res) {
-            var method = req.query.method;
+        app.get(name + '/count', handle(function(req, res) {
+            models.count(model, ret(res), err(res));
+        }));
 
-            if(method) getOp(this, method)(req, res);
-            else models.get(model, req.params.id, req.query.fields, ret(res), err(res));
-        },
-        put: function(req, res) {
-            models.update(model, req.params.id, req.body, ret(res), err(res));
-        },
-        'delete': function(req, res) {
-            models.del(model, req.params.id, ret(res), err(res));
-        }
-    }));
+        crud(app, name + '/:id', handlers({
+            get: function(req, res) {
+                var method = req.query.method;
+
+                if(method) getOp(this, method)(req, res);
+                else models.get(model, req.params.id, req.query.fields, ret(res), err(res));
+            },
+            put: function(req, res) {
+                models.update(model, req.params.id, req.body, ret(res), err(res));
+            },
+            'delete': function(req, res) {
+                models.del(model, req.params.id, ret(res), err(res));
+            }
+        }));
+    }
 
     function handlers(o) {
         for(var k in o) o[k] = handle(o[k]);
