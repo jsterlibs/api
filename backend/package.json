@@ -5,6 +5,11 @@
     "author": "Juho Vepsalainen <bebraw@gmail.com>",
     "version": "0.1.0",
 
+    "engines": {
+        "node": "0.6.17",
+        "npm": "1.19"
+    },
+
     "dependencies": {
         "express": ">= 2.5.9",
         "mongoose": ">= 2.6.4",
