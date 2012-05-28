@@ -71,13 +71,21 @@ function create(model, data, okCb, errCb) {
 }
 
 function getAll(model, query, okCb, errCb) {
-    var f = query.fields;
-    delete query.fields;
+    var fields = query.fields;
+    var limit = query.limit;
+    var skip = limit * query.offset;
 
-    model.find(query, f).where('deleted', false).run(function(err, data) {
-        if(err) errCb(err);
-        else okCb(data);
-    });
+    delete query.fields;
+    delete query.limit;
+    delete query.offset;
+
+    model.find(query, fields, {limit: limit, skip: skip}).
+        where('deleted', false).
+        run(function(err, data) {
+            if(err) errCb(err);
+            else okCb(data);
+        }
+    );
 }
 
 function update(model, id, data, okCb, errCb) {
