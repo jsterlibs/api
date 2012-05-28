@@ -39,46 +39,89 @@ function main() {
         app.use(app.router);
     });
 
-    initREST(app);
+    initAPI(app);
 
     var port = process.env.PORT || 8000;
     app.listen(port);
 }
 
-function initREST(app) {
+function initAPI(app) {
     var apis = {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
     };
 
-    for(var k in apis) initCrud(app, '/api/v1/' + k, apis[k]);
+    for(var k in apis) initREST(app, '/api/v1/' + k, apis[k], models, auth);
 }
 
-function initCrud(app, prefix, model) {
-    function ret(res) {
-        return function(d) {res.json(d);};
+function auth(fn) {
+    return function(req, res) {
+        if(process.env.NODE_ENV == 'production') {
+            // http://stackoverflow.com/questions/8152651/how-can-i-check-that-a-request-is-coming-over-https-in-express
+            if(req.headers['x-forwarded-proto'] &&
+                    req.headers['x-forwarded-proto'] === "http") {
+                error(res, MSGS.unauthorized);
+                return;
+            }
+        }
+
+        if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) {
+            delete req.query.apikey;
+            fn(req, res);
+        }
+        else error(res, MSGS.unauthorized);
+    };
+}
+
+function initREST(app, prefix, model, models, auth) {
+    crud(app, prefix, handlers({
+        post: function(req, res) {
+            models.create(model, req.body, ret(res), ret(res));
+        },
+        get: function(req, res) {
+            var method = req.query.method;
+
+            if(method) getOp(this, method)(req, res);
+            else models.getAll(model, req.query, ret(res), ret(res));
+        }
+    }));
+
+    app.get(prefix + '/count', handle(function(req, res) {
+        models.count(model, ret(res), err(res));
+    }));
+
+    crud(app, prefix + '/:id', handlers({
+        get: function(req, res) {
+            var method = req.query.method;
+
+            if(method) getOp(this, method)(req, res);
+            else models.get(model, req.params.id, req.query.fields, ret(res), err(res));
+        },
+        put: function(req, res) {
+            models.update(model, req.params.id, req.body, ret(res), err(res));
+        },
+        'delete': function(req, res) {
+            models.del(model, req.params.id, ret(res), err(res));
+        }
+    }));
+
+    function handlers(o) {
+        for(var k in o) o[k] = handle(o[k]);
+
+        return o;
     }
 
-    function auth(fn) {
-        return function(req, res) {
-            if(process.env.NODE_ENV == 'production') {
-                // http://stackoverflow.com/questions/8152651/how-can-i-check-that-a-request-is-coming-over-https-in-express
-                if(req.headers['x-forwarded-proto'] &&
-                        req.headers['x-forwarded-proto'] === "http") {
-                    error(res, MSGS.unauthorized);
-                    return;
-                }
-            }
+    function handle(fn) {
+        return auth(function(req, res) {
+            req.body = parseCommaLists(req.body);
+            req.query = parseCommaLists(req.query);
+            fn(req, res);
+        });
+    }
 
-            if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) {
-                delete req.query.apikey;
-                req.body = parseCommaLists(req.body);
-                req.query = parseCommaLists(req.query);
-                fn(req, res);
-            }
-            else error(res, MSGS.unauthorized);
-        };
+    function ret(res) {
+        return function(d) {res.json(d);};
     }
 
     function err(res) {
@@ -87,37 +130,6 @@ function initCrud(app, prefix, model) {
             else error(res, MSGS.notFound, 404);
         };
     }
-
-    crud(app, prefix, {
-        post: auth(function(req, res) {
-            models.create(model, req.body, ret(res), ret(res));
-        }),
-        get: auth(function(req, res) {
-            var method = req.query.method;
-
-            if(method) getOp(this, method)(req, res);
-            else models.getAll(model, req.query, ret(res), ret(res));
-        })
-    });
-
-    app.get(prefix + '/count', function(req, res) {
-        models.count(model, ret(res), err(res));
-    });
-
-    crud(app, prefix + '/:id', {
-        get: auth(function(req, res) {
-            var method = req.query.method;
-
-            if(method) getOp(this, method)(req, res);
-            else models.get(model, req.params.id, req.query.fields, ret(res), err(res));
-        }),
-        put: auth(function(req, res) {
-            models.update(model, req.params.id, req.body, ret(res), err(res));
-        }),
-        'delete': auth(function(req, res) {
-            models.del(model, req.params.id, ret(res), err(res));
-        })
-    });
 
     function getOp(verbs, method) {
         if(method in verbs) return verbs;
