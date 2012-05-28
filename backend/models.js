@@ -1,3 +1,4 @@
+var fkit = require('funkit');
 var mongoose = require('mongoose');
 var mongooseTypes = require('mongoose-types');
 var ObjectId = mongoose.Schema.ObjectId;
@@ -46,11 +47,43 @@ var Tag = schema({
 });
 
 function schema(o) {
-    // metadata
     o.created = {type: Date, 'default': Date.now};
+    var meta = initMeta(o);
     o.deleted = {type: Boolean, 'default': false, select: false};
 
-    return new mongoose.Schema(o, {strict: true});
+    var ret = new mongoose.Schema(o, {strict: true});
+    ret.meta = meta;
+
+    return ret;
+}
+
+function initMeta(o) {
+    var ret = {};
+
+    for(var k in o) {
+        ret[k] = copy(o[k]);
+
+        var v = ret[k];
+        var type = v.type;
+        if(fkit.isArray(v)) {
+            ret[k][0] = copy(v[0]);
+            ret[k][0].type = v[0].type.name;
+        }
+        else if(fkit.isArray(type)) ret[k].type = [type[0].name];
+        else ret[k].type = type.name;
+    }
+
+    return ret;
+}
+
+// TODO: move to funkit
+function copy(o) {
+    if(fkit.isObject(o)) {
+        var ret = {};
+        for(var k in o) ret[k] = o[k];
+        return ret;
+    }
+    else if(fkit.isArray(o)) return o.slice(0);
 }
 
 function get(model, id, fields, okCb, errCb) {
@@ -114,9 +147,20 @@ function count(model, okCb, errCb) {
     });
 }
 
-exports.License = mongoose.model('License', License);
-exports.Library = mongoose.model('Library', Library);
-exports.Tag = mongoose.model('Tag', Tag);
+function getMeta(model) {
+    return model.meta;
+}
+
+function register(name, schema) {
+    var ret = mongoose.model(name, schema);
+    ret.meta = schema.meta;
+
+    return ret;
+}
+
+exports.License = register('License', License);
+exports.Library = register('Library', Library);
+exports.Tag = register('Tag', Tag);
 
 exports.get = get;
 exports.create = create;
@@ -124,4 +168,5 @@ exports.getAll = getAll;
 exports.update = update;
 exports['delete'] = del;
 exports.count = count;
+exports.getMeta = getMeta;
 

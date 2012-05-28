@@ -73,6 +73,14 @@ function auth(fn) {
 }
 
 function initREST(app, prefix, apis, models, auth) {
+    app.get(prefix, function(req, res) {
+        var api = {};
+
+        for(var k in apis) api[k] = models.getMeta(apis[k]);
+
+        res.json(api);
+    });
+
     for(var k in apis) init(prefix + k, apis[k]);
 
     function init(name, model) {
