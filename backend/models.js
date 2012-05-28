@@ -10,53 +10,52 @@ function isObjectId(n) {
     return mongoose.Schema.ObjectId.isValid(n);
 }
 
-var License = schema('License', {
+exports.License = schema('License', {
     name: {type: String, required: true},
     url: {type: Url}
 });
-exports.License = License;
 
-var Version = schema('Version', {
+exports.Version = schema('Version', {
     zip: {type: Url},
     tar: {type: Url},
     name: {type: String, required: true},
     size: {type: String},
 
     // it's probably enough to track these on Library level instead of Version
-    dependencies: [{type: ObjectId, ref: 'Library', validate: isObjectId}],
-    dependants: [{type: ObjectId, ref: 'Library', validate: isObjectId}],
+    dependencies: refs('Library'),
+    dependants: refs('Library'),
 
     published: {type: Date}
 });
-exports.Version = Version;
 
-var Library = schema('Library', {
+exports.Library = schema('Library', {
     name: {type: String, required: true},
     repository: {type: Url, required: true, validate: [
         repositoryValidator, 'repository exists already']},
     homepage: {type: Url},
     description: {type: String},
     followers: {type: [Number]},
-    versions: [{type: ObjectId, ref: 'Version', validate: isObjectId}],
-    licenses: [{type: ObjectId, ref: 'License', validate: isObjectId}],
-
-    tags: [{type: ObjectId, ref: 'Tag', validate: isObjectId}]
+    versions: refs('Version'),
+    licenses: refs('License'),
+    tags: refs('Tag')
 });
-exports.Library = Library;
 
 function repositoryValidator(v, fn) {
-    getAll(Library, {repository: v},
+    getAll(exports.Library, {repository: v},
         function(d) {fn(!d.length);},
         function() {fn(false);}
     );
 }
 
 // TODO: figure out how to deal with tag synonyms (separate model)
-var Tag = schema('Tag', {
+exports.Tag = schema('Tag', {
     name: {type: String, required: true},
-    children: [{type: ObjectId, ref: 'Tag', validate: isObjectId}]
+    children: refs('Tag')
 });
-exports.Tag = Tag;
+
+function refs(name) {
+    return [{type: ObjectId, ref: name, validate: isObjectId}];
+}
 
 function schema(name, o) {
     o.created = {type: Date, 'default': Date.now};
