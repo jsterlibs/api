@@ -10,12 +10,13 @@ function isObjectId(n) {
     return mongoose.Schema.ObjectId.isValid(n);
 }
 
-var License = schema({
+var License = schema('License', {
     name: {type: String, required: true},
     url: {type: Url}
 });
+exports.License = License;
 
-var Version = schema({
+var Version = schema('Version', {
     zip: {type: Url},
     tar: {type: Url},
     name: {type: String, required: true},
@@ -27,10 +28,12 @@ var Version = schema({
 
     published: {type: Date}
 });
+exports.Version = Version;
 
-var Library = schema({
+var Library = schema('Library', {
     name: {type: String, required: true},
-    repository: {type: Url, required: true},
+    repository: {type: Url, required: true, validate: [
+        repositoryValidator, 'repository exists already']},
     homepage: {type: Url},
     description: {type: String},
     followers: {type: [Number]},
@@ -39,21 +42,29 @@ var Library = schema({
 
     tags: [{type: ObjectId, ref: 'Tag', validate: isObjectId}]
 });
+exports.Library = Library;
+
+function repositoryValidator(v, fn) {
+    getAll(Library, {repository: v},
+        function(d) {fn(!d.length);},
+        function() {fn(false);}
+    );
+}
 
 // TODO: figure out how to deal with tag synonyms (separate model)
-var Tag = schema({
+var Tag = schema('Tag', {
     name: {type: String, required: true},
     children: [{type: ObjectId, ref: 'Tag', validate: isObjectId}]
 });
+exports.Tag = Tag;
 
-function schema(o) {
+function schema(name, o) {
     o.created = {type: Date, 'default': Date.now};
     var meta = initMeta(o);
     o.deleted = {type: Boolean, 'default': false, select: false};
 
-    var ret = new mongoose.Schema(o, {strict: true});
+    var ret = mongoose.model(name, new mongoose.Schema(o, {strict: true}));
     ret.meta = meta;
-
     return ret;
 }
 
@@ -150,17 +161,6 @@ function count(model, okCb, errCb) {
 function getMeta(model) {
     return model.meta;
 }
-
-function register(name, schema) {
-    var ret = mongoose.model(name, schema);
-    ret.meta = schema.meta;
-
-    return ret;
-}
-
-exports.License = register('License', License);
-exports.Library = register('Library', Library);
-exports.Tag = register('Tag', Tag);
 
 exports.get = get;
 exports.create = create;
