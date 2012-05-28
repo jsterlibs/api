@@ -71,12 +71,12 @@ function initMeta(o) {
     var ret = {};
 
     for(var k in o) {
-        ret[k] = copy(o[k]);
+        ret[k] = fkit.copy(o[k]);
 
         var v = ret[k];
         var type = v.type;
         if(fkit.isArray(v)) {
-            ret[k][0] = copy(v[0]);
+            ret[k][0] = fkit.copy(v[0]);
             ret[k][0].type = v[0].type.name;
         }
         else if(fkit.isArray(type)) ret[k].type = [type[0].name];
@@ -84,16 +84,6 @@ function initMeta(o) {
     }
 
     return ret;
-}
-
-// TODO: move to funkit
-function copy(o) {
-    if(fkit.isObject(o)) {
-        var ret = {};
-        for(var k in o) ret[k] = o[k];
-        return ret;
-    }
-    else if(fkit.isArray(o)) return o.slice(0);
 }
 
 function get(model, id, fields, okCb, errCb) {
