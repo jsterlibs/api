@@ -6,8 +6,8 @@
     "version": "0.1.0",
 
     "engines": {
-        "node": "0.6.18",
-        "npm": "1.19"
+        "node": "0.6.x",
+        "npm": "1.x"
     },
 
     "dependencies": {
