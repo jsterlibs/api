@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var express = require('express');
 var mongoose = require('mongoose');
+var sugar = require('mongoose-sugar');
 var models = require('./models');
 var config = require('./config');
 
@@ -46,7 +47,7 @@ function initAPI(app) {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
-    }, models, auth);
+    }, sugar, auth);
 }
 
 function auth(fn) {

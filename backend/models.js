@@ -1,14 +1,12 @@
-var fkit = require('funkit');
 var mongoose = require('mongoose');
+var sugar = require('mongoose-sugar');
 var mongooseTypes = require('mongoose-types');
-var ObjectId = mongoose.Schema.ObjectId;
 
 mongooseTypes.loadTypes(mongoose, "url");
 var Url = mongoose.SchemaTypes.Url;
 
-function isObjectId(n) {
-    return mongoose.Schema.ObjectId.isValid(n);
-}
+var schema = sugar.schema;
+var refs = sugar.refs;
 
 exports.License = schema('License', {
     name: {type: String, required: true},
@@ -52,110 +50,4 @@ exports.Tag = schema('Tag', {
     name: {type: String, required: true},
     children: refs('Tag')
 });
-
-function refs(name) {
-    return [{type: ObjectId, ref: name, validate: isObjectId}];
-}
-
-function schema(name, o) {
-    o.created = {type: Date, 'default': Date.now};
-    var meta = initMeta(o);
-    o.deleted = {type: Boolean, 'default': false, select: false};
-
-    var ret = mongoose.model(name, new mongoose.Schema(o, {strict: true}));
-    ret.meta = meta;
-    return ret;
-}
-
-function initMeta(o) {
-    var ret = {};
-
-    for(var k in o) {
-        ret[k] = fkit.copy(o[k]);
-
-        var v = ret[k];
-        var type = v.type;
-        if(fkit.isArray(v)) {
-            ret[k][0] = fkit.copy(v[0]);
-            ret[k][0].type = v[0].type.name;
-        }
-        else if(fkit.isArray(type)) ret[k].type = [type[0].name];
-        else ret[k].type = type.name;
-    }
-
-    return ret;
-}
-
-function get(model, id, fields, okCb, errCb) {
-    model.findById(id, fields, function(err, data) {
-        if(err) return errCb(err);
-
-        okCb(data);
-    });
-}
-
-function create(model, data, okCb, errCb) {
-    var ob = new model(data);
-
-    ob.save(function(err, d) {
-        if(err) errCb(err);
-        else okCb(d);
-    });
-}
-
-function getAll(model, query, okCb, errCb) {
-    var fields = query.fields;
-    var limit = query.limit;
-    var skip = limit * query.offset;
-
-    delete query.fields;
-    delete query.limit;
-    delete query.offset;
-
-    model.find(query, fields, {limit: limit, skip: skip}).
-        where('deleted', false).
-        run(function(err, data) {
-            if(err) errCb(err);
-            else okCb(data);
-        }
-    );
-}
-
-function update(model, id, data, okCb, errCb) {
-    get(model, id, undefined, function(ob) {
-        for(var k in data) {
-            ob[k] = data[k];
-        }
-
-        return ob.save(function(err) {
-            if(err) errCb(err);
-            else okCb(ob);
-        });
-    }, errCb);
-}
-
-function del(model, id, okCb, errCb) {
-    update(model, id, {deleted: true},
-        function() {okCb({});},
-        errCb);
-}
-
-function count(model, okCb, errCb) {
-    model.count({}, function(err, count) {
-        if(err) errCb(err);
-        else okCb(count);
-    });
-}
-
-function getMeta(model) {
-    return model.meta;
-}
-
-exports.get = get;
-exports.create = create;
-exports.getAll = getAll;
-exports.update = update;
-exports['delete'] = del;
-exports.count = count;
-exports.getMeta = getMeta;
 
