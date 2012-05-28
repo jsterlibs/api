@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-var fs = require('fs');
 var express = require('express');
 var mongoose = require('mongoose');
 var models = require('./models');
@@ -23,10 +22,7 @@ function main() {
         dbUrl = process.env.MONGOHQ_URL;
     }
     else {
-        app = express.createServer({
-            key: fs.readFileSync(__dirname + '/certs/key.pem'),
-            cert: fs.readFileSync(__dirname + '/certs/cert.pem')
-        });
+        app = express.createServer();
 
         dbUrl = 'mongodb://localhost/jswiki';
     }
