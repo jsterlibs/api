@@ -5,11 +5,6 @@ var sugar = require('mongoose-sugar');
 var models = require('./models');
 var config = require('./config');
 
-var MSGS = {
-    unauthorized: "Sorry, unable to access this resource. Check your auth",
-    notFound: "Sorry, unable to find this resource"
-};
-
 main();
 
 function main() {
@@ -33,16 +28,18 @@ function initAPI(app) {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
-    }, sugar, MSGS, auth);
+    }, sugar, auth);
 }
 
 function auth(fn) {
+    var unauthorized = "Sorry, unable to access this resource. Check your auth";
+
     return function(req, res) {
         if(process.env.NODE_ENV == 'production') {
             // http://stackoverflow.com/questions/8152651/how-can-i-check-that-a-request-is-coming-over-https-in-express
             if(req.headers['x-forwarded-proto'] &&
                     req.headers['x-forwarded-proto'] === "http") {
-                error(res, MSGS.unauthorized);
+                error(res, unauthorized);
                 return;
             }
         }
@@ -51,11 +48,11 @@ function auth(fn) {
             delete req.query.apikey;
             fn(req, res);
         }
-        else error(res, MSGS.unauthorized);
+        else error(res, unauthorized);
     };
 }
 
-function initREST(app, prefix, apis, models, msgs, auth) {
+function initREST(app, prefix, apis, models, auth) {
     app.get(prefix, function(req, res) {
         var api = {};
 
@@ -120,7 +117,7 @@ function initREST(app, prefix, apis, models, msgs, auth) {
     function err(res) {
         return function(e) {
             if(e) res.json(e);
-            else error(res, msgs.notFound, 404);
+            else error(res, 'Sorry, unable to find this resource', 404);
         };
     }
 
