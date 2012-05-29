@@ -5,7 +5,6 @@ var sugar = require('mongoose-sugar');
 var models = require('./models');
 var config = require('./config');
 
-var APIKEY = config.APIKEY;
 var MSGS = {
     unauthorized: "Sorry, unable to access this resource. Check your auth",
     notFound: "Sorry, unable to find this resource"
@@ -14,21 +13,9 @@ var MSGS = {
 main();
 
 function main() {
-    var app;
-    var dbUrl;
+    mongoose.connect(config.MONGO_URL);
 
-    if(process.env.NODE_ENV == 'production') {
-        app = express.createServer();
-
-        dbUrl = process.env.MONGOHQ_URL;
-    }
-    else {
-        app = express.createServer();
-
-        dbUrl = 'mongodb://localhost/jswiki';
-    }
-
-    mongoose.connect(dbUrl);
+    var app = express.createServer();
 
     app.configure(function() {
         app.use(express.methodOverride()); // handles PUT
@@ -38,8 +25,7 @@ function main() {
 
     initAPI(app);
 
-    var port = process.env.PORT || 8000;
-    app.listen(port);
+    app.listen(config.PORT);
 }
 
 function initAPI(app) {
@@ -47,7 +33,7 @@ function initAPI(app) {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
-    }, sugar, auth);
+    }, sugar, MSGS, auth);
 }
 
 function auth(fn) {
@@ -61,7 +47,7 @@ function auth(fn) {
             }
         }
 
-        if(req.query.apikey === APIKEY || req.body.apikey === APIKEY) {
+        if(req.query.apikey === config.APIKEY || req.body.apikey === config.APIKEY) {
             delete req.query.apikey;
             fn(req, res);
         }
@@ -69,7 +55,7 @@ function auth(fn) {
     };
 }
 
-function initREST(app, prefix, apis, models, auth) {
+function initREST(app, prefix, apis, models, msgs, auth) {
     app.get(prefix, function(req, res) {
         var api = {};
 
@@ -134,7 +120,7 @@ function initREST(app, prefix, apis, models, auth) {
     function err(res) {
         return function(e) {
             if(e) res.json(e);
-            else error(res, MSGS.notFound, 404);
+            else error(res, msgs.notFound, 404);
         };
     }
 
