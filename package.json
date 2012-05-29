@@ -14,7 +14,8 @@
         "express": "== 2.5.9",
         "mongoose": "== 2.6.4",
         "mongoose-types": ">= 1.0.3",
-        "mongoose-sugar": "== 0.1.1"
+        "mongoose-sugar": "== 0.1.1",
+        "rest-sugar": "== 0.1.1"
     },
 
     "repository": {

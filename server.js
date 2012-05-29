@@ -2,6 +2,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var sugar = require('mongoose-sugar');
+var rest = require('rest-sugar');
 var models = require('./models');
 var config = require('./config');
 
@@ -24,7 +25,7 @@ function main() {
 }
 
 function initAPI(app) {
-    initREST(app, '/api/v1/', {
+    rest.init(app, '/api/v1/', {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
@@ -49,107 +50,6 @@ function auth(fn) {
             fn(req, res);
         }
         else error(res, unauthorized);
-    };
-}
-
-function initREST(app, prefix, apis, models, auth) {
-    app.get(prefix, function(req, res) {
-        var api = {};
-
-        for(var k in apis) api[k] = models.getMeta(apis[k]);
-
-        res.json(api);
-    });
-
-    for(var k in apis) init(prefix + k, apis[k]);
-
-    function init(name, model) {
-        crud(app, name, handlers({
-            post: function(req, res) {
-                models.create(model, req.body, ret(res), ret(res));
-            },
-            get: function(req, res) {
-                var method = req.query.method;
-
-                if(method) getOp(this, method)(req, res);
-                else models.getAll(model, req.query, ret(res), ret(res));
-            }
-        }));
-
-        app.get(name + '/count', handle(function(req, res) {
-            models.count(model, ret(res), err(res));
-        }));
-
-        crud(app, name + '/:id', handlers({
-            get: function(req, res) {
-                var method = req.query.method;
-
-                if(method) getOp(this, method)(req, res);
-                else models.get(model, req.params.id, req.query.fields, ret(res), err(res));
-            },
-            put: function(req, res) {
-                models.update(model, req.params.id, req.body, ret(res), err(res));
-            },
-            'delete': function(req, res) {
-                models.del(model, req.params.id, ret(res), err(res));
-            }
-        }));
-    }
-
-    function handlers(o) {
-        for(var k in o) o[k] = handle(o[k]);
-
-        return o;
-    }
-
-    function handle(fn) {
-        return auth(function(req, res) {
-            req.body = parseCommaLists(req.body);
-            req.query = parseCommaLists(req.query);
-            fn(req, res);
-        });
-    }
-
-    function ret(res) {
-        return function(d) {res.json(d);};
-    }
-
-    function err(res) {
-        return function(e) {
-            if(e) res.json(e);
-            else error(res, 'Sorry, unable to find this resource', 404);
-        };
-    }
-
-    function getOp(verbs, method) {
-        if(method in verbs) return verbs;
-        return notAllowed(verbs);
-    }
-}
-
-function parseCommaLists(o) {
-    var ret = {};
-
-    for(var k in o) {
-        var v = o[k];
-        var parts = v.split(',');
-
-        ret[k] = parts.length > 1? parts: v;
-    }
-
-    return ret;
-}
-
-function crud(app, url, verbs) {
-    for(var k in verbs) app[k](url, verbs[k] || notAllowed(verbs));
-}
-
-function notAllowed(verbs) {
-    var allowed = Object.keys(verbs).map(function(k) {k.toUpperCase();}).join(', ');
-
-    return function(req, res){
-        res.header('Allow', allowed);
-        res.send(403);
     };
 }
 
