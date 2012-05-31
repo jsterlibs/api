@@ -19,17 +19,13 @@ function main() {
         app.use(app.router);
     });
 
-    initAPI(app);
-
-    app.listen(config.PORT);
-}
-
-function initAPI(app) {
     rest.init(app, '/api/v1/', {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
     }, sugar, auth);
+
+    app.listen(config.PORT);
 }
 
 function auth(fn) {
