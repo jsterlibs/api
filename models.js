@@ -5,7 +5,7 @@ var mongooseTypes = require('mongoose-types');
 mongooseTypes.loadTypes(mongoose, "url");
 var Url = mongoose.SchemaTypes.Url;
 
-var schema = sugar.schema;
+var schema = sugar.schema(mongoose);
 var refs = sugar.refs;
 
 exports.License = schema('License', {
