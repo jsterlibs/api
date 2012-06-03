@@ -23,33 +23,17 @@ function main() {
         'libraries': models.Library,
         'tags': models.Tag,
         'licenses': models.License
-    }, sugar, auth);
+    }, sugar, rest.auth.key('apikey', config.APIKEY, isHttps));
 
     app.listen(config.PORT);
 }
 
-function auth(fn) {
-    var unauthorized = "Sorry, unable to access this resource. Check your auth";
+function isHttps(req) {
+    if(process.env.NODE_ENV == 'production')
+        // http://stackoverflow.com/questions/8152651/how-can-i-check-that-a-request-is-coming-over-https-in-express
+        return (req.headers['x-forwarded-proto'] &&
+                req.headers['x-forwarded-proto'] === "https");
 
-    return function(req, res) {
-        if(process.env.NODE_ENV == 'production') {
-            // http://stackoverflow.com/questions/8152651/how-can-i-check-that-a-request-is-coming-over-https-in-express
-            if(req.headers['x-forwarded-proto'] &&
-                    req.headers['x-forwarded-proto'] === "http") {
-                error(res, unauthorized);
-                return;
-            }
-        }
-
-        if(req.query.apikey === config.APIKEY || req.body.apikey === config.APIKEY) {
-            delete req.query.apikey;
-            fn(req, res);
-        }
-        else error(res, unauthorized);
-    };
-}
-
-function error(res, msg, code) {
-    res.json({errors: [{message: msg}]}, code);
+    return true;
 }
 
