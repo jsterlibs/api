@@ -15,7 +15,7 @@
         "mongoose": "== 2.6.4",
         "mongoose-types": ">= 1.0.3",
         "mongoose-sugar": "== 0.1.2",
-        "rest-sugar": "== 0.1.3"
+        "rest-sugar": "== 0.1.8"
     },
 
     "repository": {
