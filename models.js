@@ -40,8 +40,10 @@ exports.Library = schema('Library', {
 
 function repositoryValidator(v, fn) {
     sugar.getAll(exports.Library, {repository: v},
-        function(d) {fn(!d.length);},
-        function() {fn(false);}
+        function(err, d) {
+            if(err) fn(err);
+            else fn(!d.length);
+        }
     );
 }
 
