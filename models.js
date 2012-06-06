@@ -39,7 +39,7 @@ exports.Library = schema('Library', {
 });
 
 function repositoryValidator(v, fn) {
-    getAll(exports.Library, {repository: v},
+    sugar.getAll(exports.Library, {repository: v},
         function(d) {fn(!d.length);},
         function() {fn(false);}
     );
