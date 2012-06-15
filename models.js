@@ -39,12 +39,16 @@ exports.Library = schema('Library', {
 });
 
 function repositoryValidator(v, fn) {
+    fn(true);
+    // TODO: ok if updating (figure out how to disable validation then)
+    /*
     sugar.getAll(exports.Library, {repository: v},
         function(err, d) {
             if(err) fn(err);
             else fn(!d.length);
         }
     );
+    */
 }
 
 // TODO: figure out how to deal with tag synonyms (separate model)
