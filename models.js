@@ -35,6 +35,8 @@ exports.Library = schema('Library', {
     followers: {type: [Number]},
     versions: refs('Version'),
     licenses: refs('License'),
+    twitterTags: {type: [String]},
+    logo: {type: Url},
     tags: refs('Tag')
 });
 
