@@ -1,0 +1,11 @@
+{
+    "name": "jswiki-tests",
+    "private": true,
+    "description": "REST API tests",
+    "author": "Juho Vepsalainen <bebraw@gmail.com>",
+    "version": "0.1.0",
+
+    "dependencies": {
+        "rest-sugar-client": "== 0.2.5"
+    }
+}
