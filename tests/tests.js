@@ -10,6 +10,7 @@ var APIKEY = 'dummy';
 
 main();
 
+// XXX: should delete demoTag before creating it!
 function main() {
     client.api(URL + '?apikey=' + APIKEY, function(err, api) {
         if(err) return console.log(err);
@@ -28,7 +29,7 @@ console.log(d[0]);
 }
 
 function createTag(api, cb) {
-    api.tags.create({name: 'demoTag'}, cb);
+    api.tags.create({name: 'demoTag21'}, cb);
 }
 
 function deleteLibrary(api, id, cb) {
@@ -41,8 +42,8 @@ function deleteLibrary(api, id, cb) {
 function createLibrary(api) {
     api.libraries.create({
         name: 'test',
-        repository: 'http://www.demo.com'
-        //tags: ['demoTag']
+        repository: 'http://www.demo.com',
+        tags: 'demoTag21,' // XXX: add proper support for lists to rest-sugar
     }, function(err, d) {
         if(err) return console.log(err);
 

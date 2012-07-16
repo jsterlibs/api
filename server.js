@@ -19,13 +19,49 @@ function main() {
         app.use(app.router);
     });
 
-    rest.init(app, '/api/v1/', {
-        'libraries': models.Library,
+    var prefix = '/api/v1/';
+    var auth = rest.auth.key('apikey', config.APIKEY, isHttps);
+
+    // TODO: tidy up using multiple inits (rest-sugar needs tweaking)
+    var oldCreate = sugar.create;
+    sugar.create = function(model, data, cb) {
+        if(model.modelName == 'Library') {
+            parallel(function(name, done) {
+                sugar.getAll(models.Tag, {name: name}, done);
+            }, data.tags, function(err, d) {
+                if(err) return cb(err);
+
+                data.tags = d; // TODO: should be list of ids
+
+                oldCreate(model, data, cb);
+            });
+        }
+        else oldCreate(model, data, cb);
+    };
+
+    rest.init(app, prefix, {
         'tags': models.Tag,
-        'licenses': models.License
-    }, sugar, rest.auth.key('apikey', config.APIKEY, isHttps));
+        'licenses': models.License,
+        'libraries': models.Library
+    }, sugar, auth);
 
     app.listen(config.PORT);
+}
+
+function parallel(fn, data, done) {
+    var accumData = [];
+
+    for(var i = 0, len = data.length; i < len; i++) {
+        fn(data[i], accumulate);
+    }
+
+    function accumulate(err, d) {
+        if(err) return done(err);
+
+        accumData.push(d);
+
+        if(accumData.length == len) done(null, accumData);
+    }
 }
 
 function isHttps(req) {
