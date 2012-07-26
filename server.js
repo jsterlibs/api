@@ -3,6 +3,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var sugar = require('mongoose-sugar');
 var rest = require('rest-sugar');
+var funkit = require('funkit');
 var models = require('./models');
 var config = require('./config');
 
@@ -26,7 +27,7 @@ function main() {
     var oldCreate = sugar.create;
     sugar.create = function(model, data, cb) {
         if(model.modelName == 'Library') {
-            parallel(function(name, done) {
+            funkit.parallel(function(name, done) {
                 sugar.getAll(models.Tag, {name: name}, done);
             }, data.tags, function(err, d) {
                 if(err) return cb(err);
@@ -46,22 +47,6 @@ function main() {
     }, sugar, auth);
 
     app.listen(config.PORT);
-}
-
-function parallel(fn, data, done) {
-    var accumData = [];
-
-    for(var i = 0, len = data.length; i < len; i++) {
-        fn(data[i], accumulate);
-    }
-
-    function accumulate(err, d) {
-        if(err) return done(err);
-
-        accumData.push(d);
-
-        if(accumData.length == len) done(null, accumData);
-    }
 }
 
 function isHttps(req) {
