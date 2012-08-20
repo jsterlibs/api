@@ -69,6 +69,7 @@ function createLibrary(api, cb) {
 
 function updateLibrary(api, d) {
     d.name = 'updated test';
+    d.tags = 'demoTag21';
 
     api.libraries.update(d, function(err, d) {
         if(err) return console.log(err);

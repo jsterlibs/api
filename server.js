@@ -27,17 +27,21 @@ function main() {
     var oldCreate = sugar.create;
     sugar.create = function(model, data, cb) {
         if(model.modelName == 'Library') {
-            funkit.parallel(function(name, done) {
-                sugar.getAll(models.Tag, {name: name}, done);
-            }, arrayify(data.tags), function(err, d) {
-                if(err) return cb(err);
-
-                data.tags = getIds(d);
-
-                oldCreate(model, data, cb);
+            fetchTags(data, cb, function(d) {
+                oldCreate(model, d, cb);
             });
         }
         else oldCreate(model, data, cb);
+    };
+
+    var oldUpdate = sugar.update;
+    sugar.update = function(model, id, data, cb) {
+        if(model.modelName == 'Library') {
+            fetchTags(data, cb, function(d) {
+                oldUpdate(model, id, d, cb);
+            });
+        }
+        else oldUpdate(model, id, data, cb);
     };
 
     rest.init(app, prefix, {
@@ -47,6 +51,18 @@ function main() {
     }, sugar, auth);
 
     app.listen(config.PORT);
+}
+
+function fetchTags(data, cb, fetched) {
+    funkit.parallel(function(name, done) {
+        sugar.getAll(models.Tag, {name: name}, done);
+    }, arrayify(data.tags), function(err, d) {
+        if(err) return cb(err);
+
+        data.tags = getIds(d);
+
+        fetched(data);
+    });
 }
 
 function arrayify(d) {
