@@ -29,7 +29,7 @@ function main() {
         if(model.modelName == 'Library') {
             funkit.parallel(function(name, done) {
                 sugar.getAll(models.Tag, {name: name}, done);
-            }, data.tags, function(err, d) {
+            }, arrayify(data.tags), function(err, d) {
                 if(err) return cb(err);
 
                 data.tags = getIds(d);
@@ -47,6 +47,10 @@ function main() {
     }, sugar, auth);
 
     app.listen(config.PORT);
+}
+
+function arrayify(d) {
+    return funkit.isArray(d)? d: [d];
 }
 
 function getIds(d) {
