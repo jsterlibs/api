@@ -40,10 +40,12 @@ function deleteLibrary(api, id, cb) {
 }
 
 function createLibrary(api) {
+    // since the tag does not exist, does not set it to anything
+    // probably ok behavior for now
     api.libraries.create({
         name: 'test',
         repository: 'http://www.demo.com',
-        tags: 'demoTag21'
+        tags: 'demoTag25'
     }, function(err, d) {
         if(err) return console.log(err);
 
