@@ -12,9 +12,9 @@
 
     "dependencies": {
         "express": "== 2.5.9",
-        "mongoose": "== 2.6.4",
-        "mongoose-types": ">= 1.0.3",
-        "mongoose-sugar": "== 0.2.1",
+        "mongoose": "== 3.0.2",
+        "mongoose-types": "== 1.0.3",
+        "mongoose-sugar": "== 0.2.2",
         "rest-sugar": "== 0.2.0",
         "funkit": "== 0.4.6"
     },
