@@ -20,7 +20,7 @@ function main() {
 
             api.libraries.get({name: 'test'}, function(err, d) {
                 if(err) return console.log(err);
-console.log(d[0]);
+
                 if(d.length) deleteLibrary(api, d[0]._id, createLibrary);
                 else createLibrary(api);
             });

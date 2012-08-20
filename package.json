@@ -16,7 +16,7 @@
         "mongoose-types": ">= 1.0.3",
         "mongoose-sugar": "== 0.2.1",
         "rest-sugar": "== 0.2.0",
-        "funkit": "== 0.3.4"
+        "funkit": "== 0.4.6"
     },
 
     "repository": {

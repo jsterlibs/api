@@ -32,7 +32,7 @@ function main() {
             }, data.tags, function(err, d) {
                 if(err) return cb(err);
 
-                data.tags = d; // TODO: should be list of ids
+                data.tags = getIds(d);
 
                 oldCreate(model, data, cb);
             });
@@ -47,6 +47,21 @@ function main() {
     }, sugar, auth);
 
     app.listen(config.PORT);
+}
+
+function getIds(d) {
+    if(!d.length) return [];
+
+    var ret = [];
+
+    funkit.concat(d.filter(function(k) {
+            return k.length > 0;
+        })).forEach(function(k) {
+            ret.push(k._id);
+        }
+    );
+
+    return ret;
 }
 
 function isHttps(req) {
