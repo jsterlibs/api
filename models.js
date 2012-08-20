@@ -9,7 +9,7 @@ var schema = sugar.schema(mongoose);
 var refs = sugar.refs;
 
 exports.License = schema('License', {
-    name: {type: String, required: true},
+    name: {type: String, required: true, unique: true},
     url: {type: Url}
 });
 
@@ -27,7 +27,7 @@ exports.Version = schema('Version', {
 });
 
 exports.Library = schema('Library', {
-    name: {type: String, required: true},
+    name: {type: String, required: true, unique: true},
     repository: {type: Url, required: true, validate: [
         repositoryValidator, 'repository exists already']},
     homepage: {type: Url},
@@ -55,7 +55,7 @@ function repositoryValidator(v, fn) {
 
 // TODO: figure out how to deal with tag synonyms (separate model)
 exports.Tag = schema('Tag', {
-    name: {type: String, required: true},
+    name: {type: String, required: true, unique: true},
     children: refs('Tag')
 });
 
