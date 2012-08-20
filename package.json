@@ -15,7 +15,7 @@
         "mongoose": "== 3.0.2",
         "mongoose-types": "== 1.0.3",
         "mongoose-sugar": "== 0.2.2",
-        "rest-sugar": "== 0.2.0",
+        "rest-sugar": "== 0.2.3",
         "funkit": "== 0.4.6"
     },
 

@@ -6,6 +6,6 @@
     "version": "0.1.0",
 
     "dependencies": {
-        "rest-sugar-client": "== 0.2.6"
+        "rest-sugar-client": "== 0.2.7"
     }
 }
