@@ -43,7 +43,7 @@ function createLibrary(api) {
     api.libraries.create({
         name: 'test',
         repository: 'http://www.demo.com',
-        tags: 'demoTag21' // XXX: add proper support for lists to rest-sugar
+        tags: 'demoTag21'
     }, function(err, d) {
         if(err) return console.log(err);
 
