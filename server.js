@@ -48,9 +48,25 @@ function main() {
         'tags': models.Tag,
         'licenses': models.License,
         'libraries': models.Library
-    }, sugar, auth);
+    }, sugar, function(err, ok) {
+        return function(req, res) {
+            rest.auth.key('apikey', config.APIKEY, isHttps)(function() {
+                authReadOnly(err, ok, req, res);
+            }, ok)(req, res);
+        };
+    });
 
     app.listen(config.PORT);
+}
+
+function authReadOnly(err, ok, req, res) {
+    rest.auth.key('apikey', config.READONLY_APIKEY, function(req) {
+        return isHttps(req) && isGet(req);
+    })(err, ok)(req, res);
+}
+
+function isGet(req) {
+    return req.method == 'GET';
 }
 
 function fetchTags(data, cb, fetched) {

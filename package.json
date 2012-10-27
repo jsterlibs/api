@@ -11,11 +11,11 @@
     },
 
     "dependencies": {
-        "express": "== 2.5.9",
+        "express": "== 2.5.11",
         "mongoose": "== 3.0.2",
         "mongoose-types": "== 1.0.3",
         "mongoose-sugar": "== 0.2.2",
-        "rest-sugar": "== 0.2.3",
+        "rest-sugar": "== 0.2.5",
         "funkit": "== 0.4.6"
     },
 
