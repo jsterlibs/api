@@ -1,4 +1,4 @@
-# jswiki.org - Backend
+# jster.net - REST interface
 
 In order to test, run mongod and execute server.js. Poke the API using curl or
 some other utility after this.
