@@ -1,34 +1,33 @@
 {
-    "name": "jswiki.org-backend",
-    "private": true,
-    "description": "Backend and REST API for jswiki.org",
-    "author": "Juho Vepsalainen <bebraw@gmail.com>",
-    "version": "0.1.0",
-
-    "engines": {
-        "node": "0.6.x",
-        "npm": "1.0.x"
-    },
-
-    "dependencies": {
-        "express": "== 2.5.11",
-        "mongoose": "== 3.0.2",
-        "mongoose-types": "== 1.0.3",
-        "mongoose-sugar": "== 0.2.2",
-        "rest-sugar": "== 0.2.5",
-        "funkit": "== 0.4.6"
-    },
-
-    "repository": {
-        "type": "git",
-        "url": "https://bebraw@github.com/bebraw/jswiki.org.git"
-    },
-
-    "homepage": "https://github.com/bebraw/jswiki.org",
-
-    "bugs": {
-        "url": "https://github.com/bebraw/jswiki.org/issues"
-    },
-
-    "keywords": ["rest"]
+  "name": "jster-rest",
+  "private": true,
+  "description": "REST API for jster.net",
+  "author": "Juho Vepsalainen <bebraw@gmail.com>",
+  "version": "0.1.0",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
+  "scripts": {
+    "start": "node ./serve.js"
+  },
+  "dependencies": {
+    "express": "3.4.6",
+    "rest-sugar": "0.6.3",
+    "object-sugar": "~0.5.1",
+    "taskist": "~0.2.1",
+    "require-dir": "~0.1.0",
+    "parse-env": "~0.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bebraw@github.com/bebraw/jster-rest.git"
+  },
+  "homepage": "https://github.com/bebraw/jster-rest",
+  "bugs": {
+    "url": "https://github.com/bebraw/jster-rest/issues"
+  },
+  "keywords": [
+    "rest"
+  ]
 }
