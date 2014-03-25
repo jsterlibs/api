@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+'use strict';
+
 var express = require('express');
 var rest = require('rest-sugar');
 var sugar = require('object-sugar');
@@ -27,7 +29,7 @@ function main() {
         app.use(express.errorHandler());
     });
 
-    var api = rest(app, '/api/v1', {
+    var api = rest(app, '/v1', {
         libraries: schemas.Library
     }, sugar);
 
@@ -41,7 +43,7 @@ function main() {
 
     ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
     'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
-    ].forEach(function(element, index, array) {
+    ].forEach(function(element) {
         process.on(element, function() { terminator(element); });
     });
 
@@ -51,7 +53,7 @@ function main() {
 }
 
 function terminator(sig) {
-    if(typeof sig === "string") {
+    if(typeof sig === 'string') {
         console.log('%s: Received %s - terminating Node server ...',
             Date(Date.now()), sig);
 
