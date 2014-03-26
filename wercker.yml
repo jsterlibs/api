@@ -29,9 +29,9 @@ deploy:
             code: |
                 pwd
                 ls -la
-                tar czf - * | ssh -i $PRIVATEKEY_PATH -l root $HOSTNAME "cd /var/local/www/jster-api; tar xvzf -"
+                tar czf - * | ssh -i $PRIVATEKEY_PATH -l web-deploy $HOSTNAME "cd /var/local/www/jster-api; tar xvzf -"
         - script:
             name: start application
             code: |
-                ssh -i $PRIVATEKEY_PATH -l root $HOSTNAME "if [[ \"\$(status jster-api)\" = *start/running* ]]; then stop jster-api -n ; fi"
-                ssh -i $PRIVATEKEY_PATH -l root $HOSTNAME start jster-api
+                ssh -i $PRIVATEKEY_PATH -l web-deploy $HOSTNAME "if [[ \"\$(status jster-api)\" = *start/running* ]]; then stop jster-api -n ; fi"
+                ssh -i $PRIVATEKEY_PATH -l web-deploy $HOSTNAME start jster-api
