@@ -2,7 +2,7 @@
 
 var async = require('async');
 var request = require('request');
-var sugar = require('object-sugar');
+var sugar = require('mongoose-sugar');
 
 var Library = require('../schemas').Library;
 

@@ -3,7 +3,7 @@
 
 var express = require('express');
 var rest = require('rest-sugar');
-var sugar = require('object-sugar');
+var sugar = require('mongoose-sugar');
 var taskist = require('taskist');
 
 var config = require('./config');
@@ -14,6 +14,31 @@ var tasks = require('./tasks');
 main();
 
 function main() {
+    var mongoUrl = sugar.parseAddress(config.mongo);
+
+    console.log('Connecting to database');
+
+    sugar.connect(mongoUrl, function(err) {
+        if(err) {
+            return console.error('Failed to connect to database', mongoUrl, err);
+        }
+
+        console.log('Connected to database');
+        console.log('Starting server');
+
+        process.on('exit', terminator);
+
+        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
+        'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
+        ].forEach(function(element) {
+            process.on(element, function() { terminator(element); });
+        });
+
+        serve();
+    });
+}
+
+function serve() {
     var app = express();
     var port = config.port;
 
@@ -38,14 +63,6 @@ function main() {
     });
 
     taskist(config.tasks, tasks, {instant: true});
-
-    process.on('exit', terminator);
-
-    ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
-    'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
-    ].forEach(function(element) {
-        process.on(element, function() { terminator(element); });
-    });
 
     app.listen(port, function() {
         console.log('%s: Node (version: %s) %s started on %d ...', Date(Date.now() ), process.version, process.argv[1], port);
