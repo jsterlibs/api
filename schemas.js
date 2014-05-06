@@ -12,6 +12,7 @@ schema(exports, 'Library').fields({
     forks: Number,
     watchers: Number,
     logo: String,
-    twitter: String
+    twitter: String,
+    tags: Array
 });
 

@@ -36,7 +36,8 @@ module.exports = function(cb) {
                     forks: library.forks,
                     watchers: library.watchers,
                     logo: library['logo_url'],
-                    twitter: library['twitter_tag']
+                    twitter: library['twitter_tag'],
+                    tags: library.tags
                 }, cb);
             });
         }, function(err) {
