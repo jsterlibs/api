@@ -37,7 +37,8 @@ module.exports = function(cb) {
                     watchers: library.watchers,
                     logo: library['logo_url'],
                     twitter: library['twitter_tag'],
-                    tags: library.tags
+                    tags: library.tags,
+                    category: library.category
                 }, cb);
             });
         }, function(err) {

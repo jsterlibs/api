@@ -13,6 +13,7 @@ schema(exports, 'Library').fields({
     watchers: Number,
     logo: String,
     twitter: String,
-    tags: Array
+    tags: Array,
+    category: String
 });
 
